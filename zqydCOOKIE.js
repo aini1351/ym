@@ -59,7 +59,7 @@ module.exports = {
     "favIcon": "mdi-star-outline",
     "favIconColor": "grey",
     "datas": [{
-      "key": "zqydbody1",
+      "key": "zqydbody",
       "val": process.env.zqydbody1
     }, {
       "key": "zqydbody2",

@@ -36,7 +36,7 @@ let TokenArr = [
     process.env.jzttur191,
     process.env.jztturpg,
     process.env.jztturl1,
-    process.env.jztturl1'
+    process.env.jztturl2
 ];
 var hours = new Date().getHours();
 !(async () => {

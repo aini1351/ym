@@ -31,12 +31,12 @@ let trytx=3;	//尝试提现次数
 
 //ck顺序：...
 let TokenArr = [
-	'daygXXsJRiWUK2N_Sexw-XnHPWiytgSb',
-	'e5dSOxdt8Wku2iF2IXYrMkvtmZxgkcy1',
-    'p6ZR-rCQjgWx6QIXmKdf-QENEoxozd3h',
-    'OTZRpy-iodbDbnHl8SiH1DXFbLGifMSz',
-    'rZeudnOB5fJ-BWch5z50DeAP_QPAVZSk',
-    '90PuLbojD4ArB4l49wHnieSAueDQQbIX'
+    process.env.jzttur131,
+    process.env.jzttur132,
+    process.env.jzttur191,
+    process.env.jztturpg,
+    process.env.jztturl1,
+    process.env.jztturl1'
 ];
 var hours = new Date().getHours();
 !(async () => {

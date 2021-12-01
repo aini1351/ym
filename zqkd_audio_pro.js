@@ -13,7 +13,7 @@ docker exec -it qinglong bash -c "npm install -g crypto-js"
 */
 
 //以下时长单位都是秒
-let targetTime = 12853 //要刷的目标时长
+let targetTime = 7453 //要刷的目标时长
 let step = 340 //每次更新的时长
 let taskNum = 10 //要领的宝箱个数
 

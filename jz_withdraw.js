@@ -116,8 +116,8 @@ async function NineWithDraw(money) {
     const url = "https://api.st615.com/v1/cash/withdraw-new";
     const headers = {};
 	let cash=0
-	if (money>=30)cash=30;
-	else if (money>=5)cash=5;
+	//if (money>=30)cash=5;
+	if (money>=5)cash=5;
 	else if (money>=2)cash=2;
 	else if (money>=0.3)cash=0.3;
 	

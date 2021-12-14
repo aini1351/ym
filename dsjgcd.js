@@ -39,12 +39,12 @@ if ($.isNode()) {
     DsjdeviceId=process.env.DSJ_deviceId? process.env.DSJ_deviceId.split("#") : []
     Dsjuserid=process.env.DSJ_userid? process.env.DSJ_userid.split("#") : []
     if(!tyq){
-        tyq = true
+        tyq = false
     }else{
         tyq = false
     }
     if(!ts){
-        ts = true
+        ts = false
     }else{
         ts = false
     }
@@ -112,7 +112,7 @@ if (new Date().getTimezoneOffset() / 60 != '-8' && $.time('HH') < '16') {
     }
     if(ts){
         var myDate = new Date();
-        if ($.isNode() && (myDate.getHours() === 11 || myDate.getHours() === 19)){await notify.sendNotify($.name, subTitle )}
+        if ($.isNode() && ts && (myDate.getHours() === 11 || myDate.getHours() === 19)){await notify.sendNotify($.name, subTitle )}
     }
     }
   }})()

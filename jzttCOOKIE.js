@@ -60,22 +60,22 @@ module.exports = {
   "favIconColor": "grey",
   "datas": [{
     "key": "jztturl",
-    "val": process.env.jzttur131
-  }, {
-    "key": "jztturl2",
-    "val": process.env.jzttur132
-  }, {
-    "key": "jztturl3",
-    "val": process.env.jzttur191
-  }, {
-    "key": "jztturl4",
     "val": process.env.jztturpg
   }, {
-    "key": "jztturl5",
+    "key": "jztturl2",
     "val": process.env.jztturl1
   }, {
-    "key": "jztturl6",
+    "key": "jztturl3",
     "val": process.env.jztturl2
+  }, {
+    "key": "jztturl4",
+    "val": process.env.jzttur131
+  }, {
+    "key": "jztturl5",
+    "val": process.env.jzttur132
+  }, {
+    "key": "jztturl6",
+    "val": process.env.jzttur191
   }],
   "sessions": [],
   "isLoaded": true

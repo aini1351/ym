@@ -30,16 +30,18 @@ let status;
 
 status = (status = ($.getval("djxsstatus") || "1")) > 1 ? `${status}` : "";
 let djxsurlArr = [], djxsCookieArr = [],djxsRefererArr = [],djxscount = ''
-let djxsurl = $.getdata('djxsurl')
+//let djxsurl = $.getdata('djxsurl')
 let djxsCookie = $.isNode() ? (process.env.djxsCookie ? process.env.djxsCookie : "") : ($.getdata('djxsCookie') ? $.getdata('djxsCookie') : "")
 let djxsReferer = $.isNode() ? (process.env.djxsReferer ? process.env.djxsReferer : "") : ($.getdata('djxsReferer') ? $.getdata('djxsReferer') : "")
+let djxsurl = $.isNode() ? (process.env.djxsurl ? process.env.djxsurl : "") : ($.getdata('djxsurl') ? $.getdata('djxsurl') : "")
+
 let b = Math.round(new Date().getTime() / 1000).toString();
 let DD = RT(2000, 3500)
 let tz = ($.getval('tz') || '1');
 let tx = ($.getval('tx') || '1');
 let id = '', txid = '',Pigid = '',Catid = '',Dogid = '',dreferfer = ''
 $.message = ''
-let djxsCookies = "",djxsReferers= ""
+let djxsCookies = "",djxsReferers= "", djxsurls=''
 
 
 
@@ -82,9 +84,9 @@ let djxsCookies = "",djxsReferers= ""
                 }
             }
         } else {
-            if (process.env.djxsCookie && process.env.djxsCookie.indexOf('@') > -1) {
-                djxsCookieArr = process.env.djxsCookie.split('@');
-                console.log(`您选择的是用"@"隔开\n`)
+            if (process.env.djxsCookie && process.env.djxsCookie.indexOf('\n') > -1) {
+                djxsCookieArr = process.env.djxsCookie.split('\n');
+                console.log(`您选择的是用"换行"隔开\n`)
             } else {
                 djxsCookies = [process.env.djxsCookie]
             };
@@ -93,9 +95,9 @@ let djxsCookies = "",djxsReferers= ""
                     djxsCookieArr.push(djxsCookies[item])
                 }
             })
-            if (process.env.djxsReferer && process.env.djxsReferer.indexOf('@') > -1) {
-                djxsRefererArr = process.env.djxsReferer.split('@');
-                console.log(`您选择的是用"@"隔开\n`)
+            if (process.env.djxsReferer && process.env.djxsReferer.indexOf('\n') > -1) {
+                djxsRefererArr = process.env.djxsReferer.split('\n');
+                console.log(`您选择的是用"换行"隔开\n`)
             } else {
                 djxsReferers = [process.env.djxsReferer]
             };
@@ -104,11 +106,23 @@ let djxsCookies = "",djxsReferers= ""
                     djxsRefererArr.push(djxsReferers[item])
                 }
             })
+            if (process.env.djxsurl && process.env.djxsurl.indexOf('\n') > -1) {
+                djxsurlArr = process.env.djxsurl.split('\n');
+                console.log(`您选择的是用"换行"隔开\n`)
+            } else {
+                djxsurls = [process.env.djxsurl]
+            };
+            Object.keys(djxsurls).forEach((item) => {
+                if (djxsurls[item]) {
+                    djxsurlArr.push(djxsurls[item])
+                }
+            })
             
             console.log(`共${djxsCookieArr.length}个cookie`)
             for (let k = 0; k < djxsCookieArr.length; k++) {
                 $.message = ""
-                
+
+                djxsurl = djxsurlArr[k];
                 djxsCookie = djxsCookieArr[k];
                 djxsReferer = djxsRefererArr[k];
                    

@@ -34,7 +34,7 @@ if (process.env.flbcookie) {
                 await notify.sendNotify($.name,`用户${$.index}cookie已失效`);
                 continue
             }
-            await $.wait(1000)
+            //await $.wait(1000)
             if (!issign) {
                 console.log(`用户${$.index}: ${username}尚未签到，现在去签到`)
                 await sign(formhash);
@@ -107,7 +107,7 @@ async function home() {
                         message += '积分:'+jf+"\n福利:"+fl+"\n分享:"+fx+"\n精华:"+jh+"\n爱心:"+ax+"\n金币" +jb+'\n\n'
                         if (data.indexOf('class=\"new') != -1) {
                             message +=  `用户${$.index}：${username}有新消息待处理\n\n`
-                            
+                            console.log(`用户${$.index}：${username}有新消息待处理\n`)
                         }
                         
                         
@@ -187,7 +187,7 @@ function sign(formhash) {
             "Accept-Encoding": "gzip, deflate",
         }
     };
-    console.log(options.url)
+    //console.log(options.url)
     return new Promise(resolve => {
         $.get(options, (err, resp, data) => {
             try {

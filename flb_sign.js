@@ -1,6 +1,5 @@
 /*
-
-福利吧论坛签到
+2 0,20 * * * 福利吧论坛签到
 */
 const $ = new Env("福利吧签到");
 //const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

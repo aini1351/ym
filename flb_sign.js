@@ -5,7 +5,7 @@
 const $ = new Env("福利吧签到");
 //const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='';
+let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin;
 let ownCode = null;
 if (process.env.flbcookie) {
   if (process.env.flbcookie.indexOf('&') > -1) {
@@ -18,7 +18,7 @@ if (process.env.flbcookie) {
 }
 !(async () => {
     if (!flbcookiesArr[0]) {
-        $.msg($.name, '请先添加cookie', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+        $.msg($.name, '请先添加cookie');
         return;
     }
 
@@ -27,20 +27,20 @@ if (process.env.flbcookie) {
             cookie = flbcookiesArr[i]
             $.index = i + 1;
             $.nickName = '';
-            //await checkCookie();
+            islogin = true
             console.log(`\n******开始【账号${$.index}】*********\n`);
-            
-            await $.wait(1000)
             await getformhash()
-            console.log(formhash)
+            if (!islogin) {
+                console.log("cookie失效")
+                await notify.sendNotify($.name,`用户${$.index}cookie已失效`);
+                continue
+            }
             await $.wait(1000)
-            //console.log(issign)
             if (!issign) {
-                console.log("去签到")
+                console.log(`用户${$.index}: ${username}尚未签到，现在去签到`)
                 await sign(formhash);
             }
             await home()
-            await $.wait(3000)
 
         }
     }
@@ -59,7 +59,8 @@ if (process.env.flbcookie) {
         $.done();
     })
 
-function home() {
+
+async function home() {
     const options = {
         url: "https://www.wnflb99.com/home.php?mod=spacecp&ac=credit&showcredit=1",
         headers: {
@@ -67,7 +68,7 @@ function home() {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Connection": "keep-alive",
             "Cookie": cookie,
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
             "Referer": "https://www.wnflb99.com/plugin.php?id=fx_checkin:list",
             "Accept-Encoding": "gzip, deflate",
@@ -80,8 +81,7 @@ function home() {
                     $.logErr(err)
                 } else {
                     if (data) {
-                        //console.log(data)
-                        
+                        //console.log(data)                        
                         var reyhz = /showUpgradeinfo\)\"\>(.+?)\</
                         var rejf = /积分\: \<\/em\>(.+?) \</
                         var refl = /福利\: \<\/em\>(.+?) \</
@@ -106,6 +106,10 @@ function home() {
                         //yhz=yhzmatch[1]
                         //console.log(yhz)
                         message += '积分:'+jf+"\n福利:"+fl+"\n分享:"+fx+"\n精华:"+jh+"\n爱心:"+ax+"\n金币" +jb+'\n\n'
+                        if (data.indexOf('class=\"new') != -1) {
+                            message +=  `用户${$.index}：${username}有新消息待处理\n\n`
+                            
+                        }
                         
                         
                     }
@@ -128,7 +132,7 @@ function getformhash() {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Connection": "keep-alive",
             "Cookie": cookie,
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
             "Referer": "https://www.wnflb99.com/plugin.php",
             "Accept-Encoding": "gzip, deflate",
@@ -142,6 +146,10 @@ function getformhash() {
                 } else {
                     if (data) {
                         //console.log(data)
+                        if (data.indexOf("您尚未登录") != -1) {
+                            islogin = false
+                            return
+                        }
                         var reformhash = /formhash=(.+?)\"/
                         var reusername = /访问我的空间\"\>(.+?)\</
                         var formhashmatch = data.match(reformhash)
@@ -149,14 +157,12 @@ function getformhash() {
                         formhash = formhashmatch[1]
                         console.log('formhash是:'+formhash)
                         if (data.indexOf("已签到") != -1) {  
-                            console.log("用户" +username + "已签到")   
-                            message += "用户" +username + "已签到\n"                   
+                            console.log("用户" + $.index +': '+ username + "已签到")   
+                            message += "用户" + $.index +': '+ username + "已签到\n"                   
                             issign=true;
                         } else {
                             issign=false;
-                        }
-                        
-                        
+                        }                        
                     }
                 }
             } catch (e) {
@@ -176,7 +182,7 @@ function sign(formhash) {
             "Accept": "*/*",
             "Connection": "keep-alive",
             "Cookie": cookie,
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
             "Referer": "https://www.wnflb99.com/home.php",
             "Accept-Encoding": "gzip, deflate",
@@ -190,16 +196,11 @@ function sign(formhash) {
                     $.logErr(err)
                 } else {
                     if (data) {
-                        console.log(data)
-                        var reresultmatch = /showDialog(.+?)\'/
-
-                        var result = data.match(reresultmatch)
+                        //console.log(data)
+                        var reresultmatch = /showDialog\(\'(.+?)\'/
+                        var result = data.match(reresultmatch)[1]
                         console.log(result)
-                        
-
-
-                        
-                        
+                        message += result + '\n'                                                                       
                     }
                 }
             } catch (e) {

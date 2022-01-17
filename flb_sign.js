@@ -4,7 +4,7 @@
 const $ = new Env("福利吧签到");
 //const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin;
+let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin,signsuc;
 let ownCode = null;
 if (process.env.flbcookie) {
   if (process.env.flbcookie.indexOf('&') > -1) {
@@ -27,6 +27,7 @@ if (process.env.flbcookie) {
             $.index = i + 1;
             $.nickName = '';
             islogin = true
+            signsuc = true
             console.log(`\n******开始【账号${$.index}】*********\n`);
             await getformhash()
             if (!islogin) {
@@ -38,6 +39,10 @@ if (process.env.flbcookie) {
             if (!issign) {
                 console.log(`用户${$.index}: ${username}尚未签到，现在去签到`)
                 await sign(formhash);
+                if (!signsuc) {
+                    await sleep(2000)
+                    await sign(formhash);
+                }
             }
             await home()
 
@@ -199,6 +204,10 @@ function sign(formhash) {
                         var reresultmatch = /showDialog\(\'(.+?)\'/
                         var result = data.match(reresultmatch)[1]
                         console.log(result)
+                        if (result.indexOf("签名出错" != -1)) {
+                            signsuc=false
+                            return
+                        }
                         message += result + '\n'                                                                       
                     }
                 }

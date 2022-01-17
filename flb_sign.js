@@ -40,7 +40,7 @@ if (process.env.flbcookie) {
                 console.log(`用户${$.index}: ${username}尚未签到，现在去签到`)
                 await sign(formhash);
                 if (!signsuc) {
-                    await sleep(2000)
+                    await $.wait(2000)
                     await sign(formhash);
                 }
             }
@@ -204,7 +204,7 @@ function sign(formhash) {
                         var reresultmatch = /showDialog\(\'(.+?)\'/
                         var result = data.match(reresultmatch)[1]
                         console.log(result)
-                        if (result.indexOf("签名出错" != -1)) {
+                        if (result.indexOf("签名出错") != -1) {
                             signsuc=false
                             return
                         }

@@ -32,7 +32,7 @@ if (process.env.flbcookie) {
             await getformhash()
             if (!islogin) {
                 console.log("cookie失效")
-                await notify.sendNotify($.name,`用户${$.index}cookie已失效`);
+                await notify.sendNotify($.name,`用户${$.index} cookie已失效`);
                 continue
             }
             //await $.wait(1000)
@@ -101,18 +101,18 @@ async function home() {
                         ax = data.match(reax)[1]
                         jb = data.match(rejb)[1]
                         console.log(yhz)
-                        console.log('积分:'+jf)
-                        console.log("福利:"+fl)
-                        console.log("分享:"+fx)
-                        console.log("精华:"+jh)
-                        console.log("爱心:"+ax)
-                        console.log("金币" +jb)
+                        console.log('积分：'+jf)
+                        console.log("福利："+fl)
+                        console.log("分享："+fx)
+                        console.log("精华："+jh)
+                        console.log("爱心："+ax)
+                        console.log("金币：" +jb)
                         //yhz=yhzmatch[1]
                         //console.log(yhz)
-                        message += '积分:'+jf+"\n福利:"+fl+"\n分享:"+fx+"\n精华:"+jh+"\n爱心:"+ax+"\n金币" +jb+'\n\n'
+                        message += '积分：'+jf+"\n福利："+fl+"\n分享："+fx+"\n精华："+jh+"\n爱心："+ax+"\n金币：" +jb+'\n\n'
                         if (data.indexOf('class=\"new') != -1) {
-                            message +=  `用户${$.index}：${username}有新消息待处理\n\n`
-                            console.log(`用户${$.index}：${username}有新消息待处理\n`)
+                            message +=  `用户${$.index}：${username} 有新消息待处理\n\n`
+                            console.log(`用户${$.index}：${username} 有新消息待处理\n`)
                         }
                         
                         
@@ -159,10 +159,10 @@ function getformhash() {
                         var formhashmatch = data.match(reformhash)
                         username = data.match(reusername)[1]
                         formhash = formhashmatch[1]
-                        console.log('formhash是:'+formhash)
+                        //console.log('formhash是:'+formhash)
                         if (data.indexOf("已签到") != -1) {  
-                            console.log("用户" + $.index +': '+ username + "已签到")   
-                            message += "用户" + $.index +': '+ username + "已签到\n"                   
+                            console.log("用户" + $.index +': '+ username + " 已签到")   
+                            message += "用户" + $.index +': '+ username + " 已签到\n"                   
                             issign=true;
                         } else {
                             issign=false;
@@ -208,7 +208,7 @@ function sign(formhash) {
                             signsuc=false
                             return
                         }
-                        message += result + '\n'                                                                       
+                        message += "用户" + $.index +': ' + username + ' ' + result + '\n'                                                                       
                     }
                 }
             } catch (e) {

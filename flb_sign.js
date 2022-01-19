@@ -5,7 +5,8 @@ const $ = new Env("福利吧签到");
 //const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', signdetail='',issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin,signsuc;
-let ownCode = null;
+
+let Host = ''
 if (process.env.flbcookie) {
   if (process.env.flbcookie.indexOf('&') > -1) {
     flbcookiesArr = process.env.flbcookie.split('&');
@@ -19,6 +20,14 @@ if (process.env.flbcookie) {
     if (!flbcookiesArr[0]) {
         $.msg($.name, '请先添加cookie');
         return;
+    }
+    await gethost()
+    if (!Host) {
+        Host = 'www.wnflb99.com'
+        console.log("未获取到host，使用固定host")
+        
+    } else {
+        console.log("获取到论坛最新地址："+ Host) 
     }
 
     for (let i = 0; i < flbcookiesArr.length; i++) {
@@ -66,15 +75,15 @@ if (process.env.flbcookie) {
 
 async function home() {
     const options = {
-        url: "https://www.wnflb99.com/home.php?mod=spacecp&ac=credit&showcredit=1",
+        url: "https://" + Host + "/home.php?mod=spacecp&ac=credit&showcredit=1",
         headers: {
-            "Host": "www.wnflb99.com",
+            "Host": Host,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Connection": "keep-alive",
             "Cookie": cookie,
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Referer": "https://www.wnflb99.com/plugin.php?id=fx_checkin:list",
+            "Referer": "https://" + Host + "/plugin.php?id=fx_checkin:list",
             "Accept-Encoding": "gzip, deflate",
         }
     };
@@ -130,15 +139,15 @@ async function home() {
 
 function getformhash() {
     const options = {
-        url: "https://www.wnflb99.com/plugin.php?id=fx_checkin:checkin",
+        url: "https://" + Host + "/plugin.php?id=fx_checkin:checkin",
         headers: {
-            "Host": "www.wnflb99.com",
+            "Host": Host,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
             "Connection": "keep-alive",
             "Cookie": cookie,
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Referer": "https://www.wnflb99.com/plugin.php",
+            "Referer": "https://" + Host + "/plugin.php",
             "Accept-Encoding": "gzip, deflate",
         }
     };
@@ -182,15 +191,15 @@ function getformhash() {
 
 function sign(formhash) {
     const options = {
-        url: `https://www.wnflb99.com/plugin.php?id=fx_checkin:checkin&formhash=${formhash}&${formhash}&infloat=yes&handlekey=fx_checkin&inajax=1&ajaxtarget=fwin_content_fx_checkin`,
+        url: `https://${Host}/plugin.php?id=fx_checkin:checkin&formhash=${formhash}&${formhash}&infloat=yes&handlekey=fx_checkin&inajax=1&ajaxtarget=fwin_content_fx_checkin`,
         headers: {
-            "Host": "www.wnflb99.com",
+            "Host": Host,
             "Accept": "*/*",
             "Connection": "keep-alive",
             "Cookie": cookie,
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Referer": "https://www.wnflb99.com/home.php",
+            "Referer": "https://" + Host + "/home.php",
             "Accept-Encoding": "gzip, deflate",
         }
     };
@@ -211,6 +220,45 @@ function sign(formhash) {
                             return
                         }
                         message += "用户" + $.index +': ' + username + ' ' + result + '\n'                                                                       
+                    }
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+
+function gethost() {
+    const options = {
+        url: `https://fuliba-1251744788.file.myqcloud.com/`,
+        headers: {
+            "Host": "fuliba-1251744788.file.myqcloud.com",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            //"Cookie": cookie,
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            //"Referer": "https://www.wnflb99.com/home.php",
+            "Accept-Encoding": "gzip, deflate, br",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        }
+    };
+    //console.log(options.url)
+    return new Promise(resolve => {
+        $.get(options, (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                       //console.log(data)    
+                       var rehost = /福利吧论坛地址\s+\<a href\=\"https\:\/\/(.+?)\"/
+                       Host = data.match(rehost)[1]
+                                                                                      
                     }
                 }
             } catch (e) {

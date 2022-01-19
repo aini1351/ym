@@ -21,6 +21,7 @@ if (process.env.flbcookie) {
         $.msg($.name, '请先添加cookie');
         return;
     }
+    console.log("共" + flbcookiesArr.length + "个账号")
     await gethost()
     if (!Host) {
         Host = 'www.wnflb99.com'

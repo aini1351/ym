@@ -4,7 +4,7 @@
 const $ = new Env("福利吧签到");
 //const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin,signsuc;
+let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', signdetail='',issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin,signsuc;
 let ownCode = null;
 if (process.env.flbcookie) {
   if (process.env.flbcookie.indexOf('&') > -1) {
@@ -156,13 +156,15 @@ function getformhash() {
                         }
                         var reformhash = /formhash=(.+?)\"/
                         var reusername = /访问我的空间\"\>(.+?)\</
+                        var resigndetail = /tip_c\"\>(.+?)\</
                         var formhashmatch = data.match(reformhash)
                         username = data.match(reusername)[1]
                         formhash = formhashmatch[1]
+                        signdetail = data.match(resigndetail)[1]
                         //console.log('formhash是:'+formhash)
                         if (data.indexOf("已签到") != -1) {  
-                            console.log("用户" + $.index +': '+ username + " 已签到")   
-                            message += "用户" + $.index +': '+ username + " 已签到\n"                   
+                            console.log("用户" + $.index +': '+ username + " 已签到\n签到详情：" + signdetail)   
+                            message += "用户" + $.index +': '+ username + " 已签到\n签到详情："  + signdetail +'\n'                  
                             issign=true;
                         } else {
                             issign=false;

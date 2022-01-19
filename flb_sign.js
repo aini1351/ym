@@ -24,7 +24,7 @@ if (process.env.flbcookie) {
     await gethost()
     if (!Host) {
         Host = 'www.wnflb99.com'
-        console.log("未获取到host，使用固定host")
+        console.log("未获取到host，使用固定host:" + Host)
         
     } else {
         console.log("获取到论坛最新地址："+ Host) 

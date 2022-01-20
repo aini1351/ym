@@ -1,12 +1,11 @@
 /*
-2 0,20 * * * 小草论坛信息查询
+22 0,20 * * * caoliu论坛信息查询
 */
 const $ = new Env("小草信息查询");
-//const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let clcookie = '', clcookiesArr = [], cookie = '', message = '', username='',level='',ww='',ip='',lastlogintime='',money='',gx='',tz='',newmessagetitle='',newmessagecontent='',newmessageauthor='',newmessagetime='',newmessageurl='';
-let hqck='',hqlx='',hqcktime='',dqck='',dqlx='',dqcktime='',dqdqtime='',allmoney='',isnewmessage
-let Host = ''
+let clcookie = '', clcookiesArr = [], cookie = '', message = '', username='',level='',ww='',ip='',lastlogintime='',money='',gx='',tz='',newmessagetitle='',newmessagecontent='',newmessageauthor='',newmessagetime='';
+let hqck='',hqlx='',hqcktime='',dqck='',dqlx='',dqcktime='',dqdqtime='',allmoney='',isnewmessage,newmessageurl,newmessageurlold=''
+let ismessage
 if (process.env.clcookie) {
   if (process.env.clcookie.indexOf('&') > -1) {
     clcookiesArr = process.env.clcookie.split('&');
@@ -16,13 +15,21 @@ if (process.env.clcookie) {
     clcookiesArr = [process.env.clcookie];
   }
 }
+let time = new Date()
+if (process.env.clua) {
+    UA = process.env.clua
+}
 !(async () => {
     if (!clcookiesArr[0]) {
         $.msg($.name, '请先添加cookie');
         return;
     }
+    if (!UA) {
+        console.log('需手动抓取ua才可运行,且需保证cookie与ua对应')
+        return;
+    }
     console.log("共" + clcookiesArr.length + "个账号")
-
+    ismessage = false
     for (let i = 0; i < clcookiesArr.length; i++) {
         if (clcookiesArr[i]) {
             cookie = clcookiesArr[i]
@@ -30,34 +37,40 @@ if (process.env.clcookie) {
             $.nickName = '';
             islogin = true
             isnewmessage = true
+            newmessageurl=''
             console.log(`\n******开始【账号${$.index}】*********\n`);
             await getbaseinfo()
-            //console.log('222')
             if (!islogin) {               
                 continue
             }
             await $.wait(2000)
             await getbankinfo()
-            //console.log('3')
             await $.wait(1500)
-            let js=0
-            while (isnewmessage && js<5) {
-                await $.wait(3500)
+            let js=0            
+            while (isnewmessage && js<5) {                
+                //console.log(isnewmessage)
+                await $.wait(1500)
                 js += 1
                 await getmesssage()
-                if (newmessageurl) {
-                    await $.wait(1500)
-                    
-                    await getreadmessage(newmessageurl)
-                    
+                //console.log(newmessageurl)
+                if (newmessageurl === newmessageurlold) {
+                    break;
                 }
-            }
-              
+                if (newmessageurl) {
+                    console.log('第'+js+'次查看消息')
+                    await $.wait(1500)                    
+                    await getreadmessage(newmessageurl, js)
+                    newmessageurlold = newmessageurl
+                    await $.wait(1500)                      
+                }
+            }              
         }
     }
-    if (message !== '') {
+    console.log(new Date().getHours())
+    if (message !== '' && (ismessage || time.getHours()  == 21)) {
+        
         if ($.isNode()) {
-            //await notify.sendNotify($.name, message, '', `\n`);
+            await notify.sendNotify($.name, message, '', `\n`);
         } else {
             $.msg($.name, '', message);
         }
@@ -79,15 +92,22 @@ async function getmesssage() {
                 } else {
                     if (data) {
                         //console.log(data)
+                        if (data.indexOf('您的信箱已滿') != -1) {
+                            console.log('有新消息但查看失败，信箱已满,无法查看，请手动删除部分消息')
+                            isnewmessage = false
+                            ismessage = true
+                            return;
+
+                        }
                        if (data.indexOf('否') != -1) {
                            newmessagetime = /\<td class\=\"tac\"\>(.+?)\<\/td\>\s+.+?\s+\<font color\=\"red\"\>否/.exec(data)[1]
                            newmessageauthor = /uid\=(\d+)\"\>(.+?)\<\/a\>\<\/td\>\s+.+?\s+.+?\s+.+?\s+\<font color\=\"red\"\>否/.exec(data)[2]
                            newmessagetitle = /mid=(\d+)\"\>(.+?)\<\/a\>\s+.+?\s+.+?\s+.+?\s+.+?\s+.+?\s+\<font color\=\"red\"\>否/.exec(data)[2]
                            newmessageurl = /href\=\"(.+?)\"\>.+?\s+.+?\s+.+?\s+.+?\s+.+?\s+.+?\s+\<font color\=\"red\"\>否/.exec(data)[1]
-                           isnewmessage = true
-                           return
-                           //console.log(newmessageurl)
-                            
+                           isnewmessage = true    
+                           ismessage = true                  
+                           console.log('有新消息，尝试去查看')
+                           return                            
                         } else {
                             isnewmessage = false
                         }
@@ -105,7 +125,7 @@ async function getmesssage() {
 
 }
 
-async function getreadmessage(newmessageurl) {
+async function getreadmessage(newmessageurl,js) {
     return new Promise(resolve => {
         $.get(geturl(newmessageurl), (err, resp, data) => {
             try {
@@ -116,8 +136,8 @@ async function getreadmessage(newmessageurl) {
                         //console.log(data)
                         newmessagecontent = /content\'\>(.+?)\</.exec(data)[1]
                         //console.log(newmessagecontent)
-                        console.log(`新消息来自：${newmessageauthor}\n标题：${newmessagetitle}\n内容：${newmessagecontent}\n时间：${newmessagetime}`)
-                        message += `新消息来自：${newmessageauthor}\n标题：${newmessagetitle}\n内容：${newmessagecontent}\n时间：${newmessagetime}\n\n`
+                        console.log(`新消息${js}来自：${newmessageauthor}\n标题：${newmessagetitle}\n内容：${newmessagecontent}\n时间：${newmessagetime}`)
+                        message += `新消息${js}来自：${newmessageauthor}\n标题：${newmessagetitle}\n内容：${newmessagecontent}\n时间：${newmessagetime}\n\n`
 
                     }
                 }
@@ -189,11 +209,7 @@ async function getbankinfo() {
                         //dqck = /定期存款：(.+?)\</.exec(data)[1]
                         console.log(`活期存款：${hqck}\n活期利息：${hqlx}\n活期存款时间：${hqcktime}\n定期存款：${dqck}\n定期利息：${dqlx}\n定期存款时间：${dqcktime}\n定期到期时间：${dqdqtime}\n总资产：${allmoney}\n`)
                         message += `活期存款：${hqck}\n活期利息：${hqlx}\n活期存款时间：${hqcktime}\n定期存款：${dqck}\n定期利息：${dqlx}\n定期存款时间：${dqcktime}\n定期到期时间：${dqdqtime}\n总资产：${allmoney}\n\n`
-                        if (data.indexOf('您有新私信, 請注意查收') != -1) {
-                            console.log('您有新私信, 請注意查收')
-                            message += '您有新私信, 請注意查收\n\n'
-                            //notify.sendNotify($.name, `账号${$.index}:${username} 有新消息，请及时查收`)
-                        }                        
+                      
                     }
                 }
             } catch (e) {
@@ -211,15 +227,14 @@ function geturl(url) {
         headers: {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
             'Cookie': cookie,
             'DNT': '1',
             'Host': 't66y.com',
             'Proxy-Connection': 'keep-alive',
             'Referer': 'http://t66y.com/index.php',
             'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36 Edg/97.0.1072.62',
-
+            'User-Agent': UA,
 
         }
     };

@@ -5,7 +5,7 @@ const $ = new Env("小草信息查询");
 const notify = $.isNode() ? require('./sendNotify') : '';
 let clcookie = '', clcookiesArr = [], cookie = '', message = '', username='',level='',ww='',ip='',lastlogintime='',money='',gx='',tz='',newmessagetitle='',newmessagecontent='',newmessageauthor='',newmessagetime='';
 let hqck='',hqlx='',hqcktime='',dqck='',dqlx='',dqcktime='',dqdqtime='',allmoney='',isnewmessage,newmessageurl,newmessageurlold=''
-let ismessage
+let ismessage,UA=''
 if (process.env.clcookie) {
   if (process.env.clcookie.indexOf('&') > -1) {
     clcookiesArr = process.env.clcookie.split('&');
@@ -25,7 +25,7 @@ if (process.env.clua) {
         return;
     }
     if (!UA) {
-        console.log('需手动抓取ua才可运行,且需保证cookie与ua对应')
+        console.log('需手动抓取ua才可运行,且需保证cookie与ua对应,变量为：clua')
         return;
     }
     console.log("共" + clcookiesArr.length + "个账号")

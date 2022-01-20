@@ -66,7 +66,6 @@ if (process.env.clua) {
             }              
         }
     }
-    console.log(new Date().getHours())
     if (message !== '' && (ismessage || time.getHours()  == 21)) {
         
         if ($.isNode()) {

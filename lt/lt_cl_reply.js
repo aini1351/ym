@@ -6,7 +6,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let clcookie = '', clcookiesArr = [], cookie = '', message = '', username='',level='',ww='',ip='',lastlogintime='',money='',gx='',tz='',newmessagetitle='',newmessagecontent='',newmessageauthor='',newmessagetime='';
 let hqck='',hqlx='',hqcktime='',dqck='',dqlx='',dqcktime='',dqdqtime='',allmoney='',isnewmessage,newmessageurl,newmessageurlold=''
 let ismessage,UA='',urlarr=[],authorarr=[],urlarrs=[],authorarrs=[],blacklist=[],blacklists=[],isrun,titlearr=[],titlearrs=[]
-let tidarrs=[],replycount='',reply_news='',reply_news_arr=[]
+let tidarrs=[],replycount='',reply_news='',reply_news_arr=[],myuid='',jrft=''
 if (process.env.clcookie) {
   if (process.env.clcookie.indexOf('&') > -1) {
     clcookiesArr = process.env.clcookie.split('&');
@@ -44,6 +44,8 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             isrun = true
             console.log(`\n******开始【账号${$.index}】*********\n`);
             await getbaseinfo()
+            await $.wait(1500)
+            await getmyuid()
             if (!isrun) {
                 //await 
                 continue
@@ -67,7 +69,7 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
                     var reply_news = reply_news_arr[a]
                     var x = random(0,tidarrs.length - 1)
                     var y = random(1025000,1600000)
-                    console.log(a,reply_news_arr.length,reply_news,x,y)
+                    //console.log(a,reply_news_arr.length,reply_news,x,y)
                     console.log(`当前在第 ${j+1} 次回复，回复帖子为 ${authorarrs[x]} 的: ${titlearrs[x]} ,回复内容为: ${reply_news} `)
                     await reply(tidarrs[x],titlearrs[x],reply_news)
                     var z = tidarrs.length
@@ -103,6 +105,59 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
     .finally(() => {
         $.done();
     })
+
+function getmyuid() {
+    return new Promise(resolve => {
+        $.get(geturl('profile.php'),async (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                        //console.log(data)
+                        myuid = /\（UID\:(\d+)\）/.exec(data)[1]
+                        console.log('UID:' + myuid)
+                        await gettodaysend()
+                    }
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+            
+    })  
+
+}
+
+
+async function gettodaysend() {
+    return new Promise(resolve => {
+        $.get(geturl('profile.php?action=show&uid='+myuid), (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                        //console.log(data)
+                        var ft = /平均每日發帖\<\/th\>\<th\>(.+?)\</.exec(data)[1]
+                        jrft = /今日(\d+)篇/.exec(ft)[1]
+                        console.log(ft)
+                        message += ft
+                    }
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+            
+    })  
+
+}
+
 
 async function reply(tid,title,reply) {
     return new Promise(resolve => {
@@ -267,8 +322,8 @@ async function getbaseinfo() {
                        money = /金錢\:(.+?)\|/.exec(data)[1]
                        gx = /貢獻\:(.+?)\|/.exec(data)[1]
                        tz = /共發表帖子\:(.+?)\|/.exec(data)[1]
-                       console.log(`用户${$.index}：${username}\n等级：${level}\n上次登录时间：${lastlogintime}\n当前IP：${ip}\n威望：${ww}\n金钱：${money}\n贡献：${gx}\n共发表帖子：${tz}\n`)
-                       message += `用户${$.index}：${username}\n等级：${level}\n上次登录时间：${lastlogintime}\n当前IP：${ip}\n威望：${ww}\n金钱：${money}\n贡献：${gx}\n共发表帖子：${tz}\n`
+                       console.log(`用户${$.index}：${username}\n等级：${level}\n上次登录时间：${lastlogintime}\n当前IP：${ip}\n威望：${ww}\n金钱：${money}\n贡献：${gx}\n共发表帖子：${tz}`)
+                       message += `用户${$.index}：${username}\n等级：${level}\n上次登录时间：${lastlogintime}\n当前IP：${ip}\n威望：${ww}\n金钱：${money}\n贡献：${gx}\n共发表帖子：${tz}`
                         var reblacklist = /action=show&username\=(.+?)\"\>/g
                         //console.log(data)
                         blacklist = data.match(reblacklist)

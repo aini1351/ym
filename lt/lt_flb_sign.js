@@ -5,7 +5,7 @@ const $ = new Env("福利吧签到");
 //const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let flbcookie = '', flbcookiesArr = [], cookie = '', message = '', formhash='', signdetail='',issign, username='',fl='',ax='',jf='',yhz='',fx='',jb='',xx='',newmessage,islogin,signsuc;
-
+let ismessage
 let Host = ''
 if (process.env.flbcookie) {
   if (process.env.flbcookie.indexOf('&') > -1) {
@@ -30,7 +30,7 @@ if (process.env.flbcookie) {
     } else {
         console.log("获取到论坛最新地址："+ Host) 
     }
-
+    ismessage = false
     for (let i = 0; i < flbcookiesArr.length; i++) {
         if (flbcookiesArr[i]) {
             cookie = flbcookiesArr[i]
@@ -58,7 +58,7 @@ if (process.env.flbcookie) {
 
         }
     }
-    if (message !== '') {
+    if (message !== '' && ismessage) {
         if ($.isNode()) {
             await notify.sendNotify($.name, message, '', `\n`);
         } else {
@@ -121,6 +121,7 @@ async function home() {
                         //console.log(yhz)
                         message += '积分：'+jf+"\n福利："+fl+"\n分享："+fx+"\n精华："+jh+"\n爱心："+ax+"\n金币：" +jb+'\n\n'
                         if (data.indexOf('class=\"new') != -1) {
+                            ismessage = true
                             message +=  `用户${$.index}：${username} 有新消息待处理\n\n`
                             console.log(`用户${$.index}：${username} 有新消息待处理\n`)
                         }
@@ -220,6 +221,7 @@ function sign(formhash) {
                             signsuc=false
                             return
                         }
+                        ismessage = true
                         message += "用户" + $.index +': ' + username + ' ' + result + '\n'                                                                       
                     }
                 }

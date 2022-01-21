@@ -37,10 +37,13 @@ if (process.env.clua) {
             $.nickName = '';
             islogin = true
             isnewmessage = true
+            var isrun = true
             newmessageurl=''
             console.log(`\n******开始【账号${$.index}】*********\n`);
             await getbaseinfo()
-            if (!islogin) {               
+            if (!islogin || !isrun) {               
+                continue
+            } else if (!isrun) {
                 continue
             }
             await $.wait(2000)
@@ -152,7 +155,7 @@ async function getreadmessage(newmessageurl,js) {
 
 async function getbaseinfo() {
     return new Promise(resolve => {
-        $.get(geturl('index.php'), (err, resp, data) => {
+        $.get(geturl('index.php'), async (err, resp, data) => {
             try {
                 if (err) {
                     $.logErr(err)
@@ -164,6 +167,12 @@ async function getbaseinfo() {
                            islogin = false 
                            message += `账号${$.index}cookie已失效，请重新抓取\n\n`
                            return
+                        } else if (data.indexOf('禁止發言') != -1) {
+                            username = /font-weight\:bold\"\>(.+?)\</.exec(data)[1]
+                            console.log('您的账号被禁言，请去查看原因，退出运行')
+                            await notify.sendNotify($.name,`用户${$.index}:${username}已被禁言，请去查看原因`)
+                            isrun = false
+                            return
                         }
                        
                        username = /font-weight\:bold\"\>(.+?)\</.exec(data)[1]

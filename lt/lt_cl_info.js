@@ -125,7 +125,7 @@ async function gettodaysend() {
                         //console.log(data)
                         var ft = /平均每日發帖\<\/th\>\<th\>(.+?)\</.exec(data)[1]
                         var jrft = /今日(\d+)篇/.exec(ft)[1]
-                        console.log(ft,jrft)
+                        console.log(ft)
                         message += ft
                     }
                 }

@@ -20,7 +20,7 @@ if (process.env.flbcookie) {
 }
 !(async () => {
     if (!flbcookiesArr[0]) {
-        $.msg($.name, '请先添加cookie');
+        $.msg($.name, '请先添加cookie，变量名 flbcookie');
         return;
     }
     console.log("共" + flbcookiesArr.length + "个账号")

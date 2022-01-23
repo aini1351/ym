@@ -91,7 +91,7 @@ if (new Date().getTimezoneOffset() / 60 != '-8' && $.time('HH') < '16') {
 
             await dsj_rwzt();
             await signin()
-            //await signinfo()
+              //await signinfo()
             await dsj_led()
             await run()
             await run_rw()
@@ -175,9 +175,9 @@ async function run_rw(){
         await dsj_xcsds()//相册上电视
     }
     //开家庭号task_mobile_create_family
-    if(task_mobile_create_family == 0){
+    /*if(task_mobile_create_family == 0){
         await dsj_kjth() //开家庭号
-    }
+    }*/
     //刷短视频
     if(ShortvideoPlay == 0){
         await dsj_sdsp()//刷短视频
@@ -292,7 +292,7 @@ let url = {
 
 //签到
 function signin() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         $.get({
             url: `${dianshijia_API}/v5/sign/signin?accelerate=0&ext=0&ticket=`,
             headers: DSJ_headers
@@ -326,52 +326,183 @@ function signin() {
 }
 
 function signinfo() {
-  return new Promise((resolve, reject) => {
-     $.get({ url: `${dianshijia_API}/v5/sign/get`, headers: DSJ_headers}, (error, response, data) => 
-  {
-      //console.log(data) 
-   if(logs)$.log(`${$.name}, 签到信息: ${data}\n`)
-     const result = JSON.parse(data)
-     if (result.errCode == 0) {
-     var d = `${result.data.currentDay}`
-     for (i=0; i < result.data.recentDays.length;i++)      
-        {
-       if (d == result.data.recentDays[i].day)
-          {detail += ` 连续签到${d}天\n`
-       var j = result.data.recentDays[i].rewards.length
-       if (j > 1){
-aa=result.data.recentDays[i+1].rewards[1].rewardsType
-bb=result.data.recentDays[i+1].rewards[2].rewardsType
-cc=result.data.recentDays[i+1].rewards[3].rewardsType
+    return new Promise(resolve => {
+        $.get({ url: `${dianshijia_API}/v5/sign/get`, headers: DSJ_headers}, (error, response, data) => {
+            try {
+        //console.log(data) 
+        if(logs)$.log(`${$.name}, 签到信息: ${data}\n`)
+        data = JSON.parse(data)
+        if (data.errCode == 0) {
+            //var d = `${data.data.currentDay}`
+            for (i=0; i < data.data.recentDays.length;i++) {
+                if (data.data.currentDay == data.data.recentDays[i].day && data.data.recentDays[i].isSign == 1) {
+                    //detail += ` 连续签到${d}天\n`
+                    //var j = data.data.recentDays[i].rewards.length
+                    console.log(data.data)
 
-if (aa==4){
-money=result.data.recentDays[i+1].rewards[1].id
-detail += `【奖励信息】今日:${result.data.recentDays[i+1].rewards[1].name}\n`
-
-} else 
-if (bb==4){
-money=result.data.recentDays[i+1].rewards[2].id
-detail += `【奖励信息】今日:${result.data.recentDays[i+1].rewards[2].name}\n`
-
-} else
-if (cc==4){
-money=result.data.recentDays[i+1].rewards[3].id
-detail += `【奖励信息】今日:${result.data.recentDays[i+1].rewards[3].name}\n`
-}
-
-                 } 
-          else   if (j == 1) 
-                 { 
-                detail += `【奖励信息】今日: 无 ` 
-                 }
         
-               }               
-           }  
-     resolve()
+                }               
+            }  
+            //resolve()
         }
+                    } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
     })
-  })
 }  
+
+function test() {
+    var tt = {
+    "errCode": 0,
+    "data": {
+        "currentDay": 3,
+        "conDay": 3,
+        "isSign": 1,
+        "img": "http://cdn.dianshihome.com/static/sign/3be733026ae41604ec67440bf02fa1e7.png",
+        "icon": "http://cdn.dianshihome.com/static/sign/ecced8cc39884db07e71344f6308c0a8.jpg",
+        "firstSign": 2,
+        "totalCount": 104,
+        "interrupted": 1,
+        "extraRewardId": 44,
+        "accelerate": {
+            "isOn": 2,
+            "isUsed": 2,
+            "coin": 0,
+            "beginDay": 0,
+            "location": 0,
+            "img": "",
+            "offset": 0
+        },
+        "recentDays": [{
+            "day": 3,
+            "isSign": 1,
+            "rewards": [{
+                "rewardsType": 0,
+                "name": "金币",
+                "img": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "imgNew": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "count": 399,
+                "price": 399,
+                "imgTv": "http://cdn.dianshihome.com/static/sign/45e60c81a848b607b51f83f785ff0627.png",
+                "sendWay": 0
+            }, {
+                "id": 44,
+                "rewardsType": 1,
+                "name": "1天VIP",
+                "img": "",
+                "imgNew": "",
+                "count": 1,
+                "price": 2888,
+                "imgTv": "",
+                "sendWay": 0
+            }]
+        }, {
+            "day": 4,
+            "isSign": 2,
+            "rewards": [{
+                "rewardsType": 0,
+                "name": "金币",
+                "img": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "imgNew": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "count": 499,
+                "price": 499,
+                "imgTv": "http://cdn.dianshihome.com/static/sign/45e60c81a848b607b51f83f785ff0627.png",
+                "sendWay": 0
+            }, {
+                "id": 42,
+                "rewardsType": 3,
+                "name": "1888金币",
+                "img": "",
+                "imgNew": "",
+                "count": 1888,
+                "price": 1888,
+                "imgTv": "",
+                "sendWay": 0
+            }, {
+                "id": 44,
+                "rewardsType": 1,
+                "name": "1天VIP",
+                "img": "",
+                "imgNew": "",
+                "count": 1,
+                "price": 2888,
+                "imgTv": "",
+                "sendWay": 0
+            }]
+        }, {
+            "day": 5,
+            "isSign": 2,
+            "rewards": [{
+                "rewardsType": 0,
+                "name": "金币",
+                "img": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "imgNew": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "count": 599,
+                "price": 599,
+                "imgTv": "http://cdn.dianshihome.com/static/sign/45e60c81a848b607b51f83f785ff0627.png",
+                "sendWay": 0
+            }, {
+                "id": 42,
+                "rewardsType": 3,
+                "name": "1888金币",
+                "img": "",
+                "imgNew": "",
+                "count": 1888,
+                "price": 1888,
+                "imgTv": "",
+                "sendWay": 0
+            }, {
+                "id": 44,
+                "rewardsType": 1,
+                "name": "1天VIP",
+                "img": "",
+                "imgNew": "",
+                "count": 1,
+                "price": 2888,
+                "imgTv": "",
+                "sendWay": 0
+            }]
+        }, {
+            "day": 6,
+            "isSign": 2,
+            "rewards": [{
+                "rewardsType": 0,
+                "name": "金币",
+                "img": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "imgNew": "http://cdn.dianshihome.com/static/sign/ea6d21ef3478e4bb6cd24738424ab2dc.png",
+                "count": 699,
+                "price": 699,
+                "imgTv": "http://cdn.dianshihome.com/static/sign/45e60c81a848b607b51f83f785ff0627.png",
+                "sendWay": 0
+            }, {
+                "id": 42,
+                "rewardsType": 3,
+                "name": "1888金币",
+                "img": "",
+                "imgNew": "",
+                "count": 1888,
+                "price": 1888,
+                "imgTv": "",
+                "sendWay": 0
+            }, {
+                "id": 44,
+                "rewardsType": 1,
+                "name": "1天VIP",
+                "img": "",
+                "imgNew": "",
+                "count": 1,
+                "price": 2888,
+                "imgTv": "",
+                "sendWay": 0
+            }]
+        }],
+        "isChooseExtraReward": 1
+    }
+}
+}
 
 ///观看视频赚钱
 function dsj_ksp() {

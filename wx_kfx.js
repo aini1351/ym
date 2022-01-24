@@ -6,8 +6,8 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let cookbook_id = '',cookbook_idArr=[], invite_id='',message='',member_id='',member_idArr=[]
 let kfxtokensArr=[],invite_idarr=[] 
 if (process.env.kfxtoken) {
-  if (process.env.kfxtoken.indexOf('&') > -1) {
-    kfxtokensArr = process.env.kfxtoken.split('&');
+  if (process.env.kfxtoken.indexOf('@') > -1) {
+    kfxtokensArr = process.env.kfxtoken.split('@');
   } else if (process.env.kfxtoken.indexOf('\n') > -1) {
     kfxtokensArr = process.env.kfxtoken.split('\n');
   } else {

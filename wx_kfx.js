@@ -137,8 +137,7 @@ async function wx_sdk(invite_id,cookbook_id) {
             'Host': 'fscrm.kraftheinz.net.cn',
             'Connection': 'keep-alive',
             'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-            'token': cookie,
-            'Content-Type': 'application/x-www-form-urlencoded',
+
             'Accept': '*/*',
             'X-Requested-With': 'com.tencent.mm',
             'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
@@ -169,13 +168,12 @@ async function wx_sdk(invite_id,cookbook_id) {
 
 async function sdk(invite_id,cookbook_id,wx) {
     const options = {
-        url: `https://open.weixin.qq.com/sdk/report?v=1&o=0&s=2&c=8.0.16&a=wx65da983ae179e${wx}b&n=wifi&i=-${time.getTime()}&p=3${wx}&u=https%3A%2F%2Ffscrm.kraftheinz.net.cn%2F%3Finvite_id%3D${invite_id}%26cookbook_id%3D${cookbook_id}%23%2F`,
+        url: `https://open.weixin.qq.com/sdk/report?v=1&o=0&s=2&c=8.0.16&a=wx65da983ae179e${wx}b&n=wifi&i=-${time.getTime()}&p=309&u=https%3A%2F%2Ffscrm.kraftheinz.net.cn%2F%3Finvite_id%3D${invite_id}%26cookbook_id%3D${cookbook_id}%23%2F`,
         headers: {
             'Host': 'open.weixin.qq.com',
             'Connection': 'keep-alive',
             'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-            //'token': cookie,
-            //'Content-Type': 'application/x-www-form-urlencoded',
+
             'Accept': 'image/avif,image/webp,image/wxpic,image/tpg,image/apng,image/*,*/*;q=0.8',
             'X-Requested-With': 'com.tencent.mm',
             'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
@@ -212,9 +210,8 @@ async function js(invite_id,cookbook_id,wx) {
             'Host': 'fscrm.kraftheinz.net.cn',
             'Connection': 'keep-alive',
             'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-            //'token': cookie,
-            //'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'image/avif,image/webp,image/wxpic,image/tpg,image/apng,image/*,*/*;q=0.8',
+
+            'Accept': '*/*',
             'X-Requested-With': 'com.tencent.mm',
             'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
             'Accept-Encoding': 'gzip, deflate',
@@ -250,9 +247,8 @@ async function help(invite_id,cookbook_id) {
             'Host': 'fscrm.kraftheinz.net.cn',
             'Connection': 'keep-alive',
             'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-            //'token': cookie,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': '*/*',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/wxpic,image/tpg,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'X-Requested-With': 'com.tencent.mm',
             'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
             'Accept-Encoding': 'gzip, deflate',

@@ -4,14 +4,14 @@
 const $ = new Env("卡夫享");
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookbook_id = '',cookbook_idArr=[], invite_id='',message='',member_id='',member_idArr=[]
-let kfxcookiesArr=[],invite_idarr=[] 
-if (process.env.kfxcookie) {
-  if (process.env.kfxcookie.indexOf('&') > -1) {
-    kfxcookiesArr = process.env.kfxcookie.split('&');
-  } else if (process.env.kfxcookie.indexOf('\n') > -1) {
-    kfxcookiesArr = process.env.kfxcookie.split('\n');
+let kfxtokensArr=[],invite_idarr=[] 
+if (process.env.kfxtoken) {
+  if (process.env.kfxtoken.indexOf('&') > -1) {
+    kfxtokensArr = process.env.kfxtoken.split('&');
+  } else if (process.env.kfxtoken.indexOf('\n') > -1) {
+    kfxtokensArr = process.env.kfxtoken.split('\n');
   } else {
-    kfxcookiesArr = [process.env.kfxcookie];
+    kfxtokensArr = [process.env.kfxtoken];
   }
 }
 let time = new Date()
@@ -22,16 +22,16 @@ if (process.env.clua) {
 //member_idArr
 replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
 !(async () => {
-    if (!kfxcookiesArr[0]) {
+    if (!kfxtokensArr[0]) {
         $.msg($.name, '请先添加cookie');
         return;
     }
 
-    console.log("共" + kfxcookiesArr.length + "个账号")
+    console.log("共" + kfxtokensArr.length + "个账号")
     ismessage = false
-    for (let i = 0; i < kfxcookiesArr.length; i++) {
-        if (kfxcookiesArr[i]) {
-            cookie = kfxcookiesArr[i]
+    for (let i = 0; i < kfxtokensArr.length; i++) {
+        if (kfxtokensArr[i]) {
+            cookie = kfxtokensArr[i]
             $.index = i + 1;
             $.nickName = '';
             islogin = true
@@ -46,16 +46,16 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             //
             await getUserinfo()
             await $.wait(1000)
-            if (time.getHours() === 8 ) await dailySign()
+            if (time.getHours() === 8 ||time.getHours() === 18) await dailySign()
             await $.wait(1500) 
             if ($.index === 1) await getCookbookIndex()
             await $.wait(1000)
                      
         }
     }
-    console.log('开始互助')
-    for (let i = 0; i < kfxcookiesArr.length; i++) {
-        cookie = kfxcookiesArr[i]
+    /*console.log('开始互助')
+    for (let i = 0; i < kfxtokensArr.length; i++) {
+        cookie = kfxtokensArr[i]
         $.index = i + 1
         var y = random(0,cookbook_idArr.length)
         var x = cookbook_idArr[y]
@@ -75,7 +75,7 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             await $.wait(1000)
             await recordScoreShare()
         }
-    }
+    }*/
     if (message !== '' && (ismessage || time.getHours()  == 21)) {
         
         if ($.isNode()) {
@@ -284,13 +284,16 @@ async function help(invite_id,cookbook_id) {
 
 async function exchange() {
     return new Promise(resolve => {
-        $.post(posturl('exchangeIntegralNew',"value=京东E卡2元&phone=&type=视频卡"), (err, resp, data) => {
+        $.post(posturl('exchangeIntegralNew',"value=京东E卡2元&phone=&type=视频卡"),async (err, resp, data) => {
             try {
                 if (err) {
                     $.logErr(err)
                 } else {
+                    data=JSON.parse(data)
                     if (data) {
-                    console.log(data)                        
+                        console.log(JSON.stringify(data)) 
+                        if(data.error_code === 0) await notify.sendNotify($.name,`用户${$.index}:${$.nickName} ${data.msg}\n卡号:${data.data.cards.cardno}\n卡密:${data.data.cards.cardpsw}`)
+                                               
                       
                     }
                 }

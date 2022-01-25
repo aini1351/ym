@@ -14,8 +14,8 @@ if (process.env.flbcookie) {
     flbcookiesArr = process.env.flbcookie.split('&');
   } else if (process.env.flbcookie.indexOf('\n') > -1) {
     flbcookiesArr = process.env.flbcookie.split('\n');
-  } else if (process.env.clcookie.indexOf('@') > -1) {
-    clcookiesArr = process.env.clcookie.split('@');
+  } else if (process.env.flbcookie.indexOf('@') > -1) {
+    clcookiesArr = process.env.flbcookie.split('@');
   } else {
     flbcookiesArr = [process.env.flbcookie];
   }

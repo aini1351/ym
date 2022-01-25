@@ -8,6 +8,8 @@ let kfxtokensArr=[],invite_idarr=[]
 if (process.env.kfxtoken) {
   if (process.env.kfxtoken.indexOf('@') > -1) {
     kfxtokensArr = process.env.kfxtoken.split('@');
+  } else if (process.env.kfxtoken.indexOf('&') > -1) {
+    clcookiesArr = process.env.kfxtoken.split('&');
   } else if (process.env.kfxtoken.indexOf('\n') > -1) {
     kfxtokensArr = process.env.kfxtoken.split('\n');
   } else {

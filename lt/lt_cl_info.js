@@ -11,6 +11,8 @@ if (process.env.clcookie) {
     clcookiesArr = process.env.clcookie.split('&');
   } else if (process.env.clcookie.indexOf('\n') > -1) {
     clcookiesArr = process.env.clcookie.split('\n');
+  } else if (process.env.clcookie.indexOf('@') > -1) {
+    clcookiesArr = process.env.clcookie.split('@');
   } else {
     clcookiesArr = [process.env.clcookie];
   }

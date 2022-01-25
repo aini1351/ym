@@ -12,6 +12,8 @@ if (process.env.clcookie) {
     clcookiesArr = process.env.clcookie.split('&');
   } else if (process.env.clcookie.indexOf('\n') > -1) {
     clcookiesArr = process.env.clcookie.split('\n');
+  } else if (process.env.clcookie.indexOf('@') > -1) {
+    clcookiesArr = process.env.clcookie.split('@');
   } else {
     clcookiesArr = [process.env.clcookie];
   }
@@ -42,6 +44,7 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             isnewmessage = true
             newmessageurl=''
             isrun = true
+            jrft = ''
             console.log(`\n******开始【账号${$.index}】*********\n`);
             await getbaseinfo()
             await $.wait(1500)
@@ -57,11 +60,20 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             await gettodayurl() 
 
             if (isrun) {
+                if (replycount > 60 - jrft) {
+                    if (60 - jrft > 0) {
+                        replycount = 60 - jrft
+                    } else {
+                        console.log('您今日回帖数量已超过60，停止回帖')
+                        continue
+                    }
+
+                }                
                 if (replycount > tidarrs.length) {
                     replycount = tidarrs.length
-                    //console.log(`本次将回复 ${replycount} 个帖子`)
+
                 } else {
-                    //console.log(`本次将回复 ${replycount} 个帖子`)
+                    
                 }
                 console.log(`本次将回复 ${replycount} 个帖子`)
                 for (var j = 0; j < replycount; j++) {

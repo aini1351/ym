@@ -1,5 +1,6 @@
 /*
 22 6 * * * 卡夫享
+微信小程序入口 https://fscrm.kraftheinz.net.cn/?from=p0KkGEBMKTFVD/N6plb4og==
 */
 const $ = new Env("卡夫享");
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -8,8 +9,6 @@ let kfxtokensArr=[],invite_idarr=[]
 if (process.env.kfxtoken) {
   if (process.env.kfxtoken.indexOf('@') > -1) {
     kfxtokensArr = process.env.kfxtoken.split('@');
-  } else if (process.env.kfxtoken.indexOf('&') > -1) {
-    clcookiesArr = process.env.kfxtoken.split('&');
   } else if (process.env.kfxtoken.indexOf('\n') > -1) {
     kfxtokensArr = process.env.kfxtoken.split('\n');
   } else {
@@ -47,8 +46,9 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             //await traceEvent()
             //
             await getUserinfo()
+            await getScoreOrder()
             await $.wait(1000)
-            if (time.getHours() === 8 ||time.getHours() === 18) await dailySign()
+            if (time.getHours() === 8) await dailySign()
             await $.wait(1500) 
             if ($.index === 1) await getCookbookIndex()
             await $.wait(1000)
@@ -115,7 +115,7 @@ async function getUserinfo() {
                     data = JSON.parse(data)
                     if (data.error_code === 0) {
                         //console.log(data)
-                        $.nickName = data.data.nickName
+                        $.nickName = data.data.nickname
                         console.log(`用户${$.index}:${data.data.nickname}已签到次数${data.data.signTimes}`)                 
                         console.log(`当前积分：${data.data.memberInfo.score}`)
                         if (data.data.memberInfo.score>20) await exchange()
@@ -290,7 +290,41 @@ async function exchange() {
                     data=JSON.parse(data)
                     if (data) {
                         console.log(JSON.stringify(data)) 
-                        if(data.error_code === 0) await notify.sendNotify($.name,`用户${$.index}:${$.nickName} ${data.msg}\n卡号:${data.data.cards.cardno}\n卡密:${data.data.cards.cardpsw}`)
+                        if(data.error_code === 0) await notify.sendNotify($.name,`用户${$.index}:${$.nickname} ${data.msg}\n卡号:${data.data.cards.card.cardno}\n卡密:${data.data.cards.card.cardpsw}`)
+                                               
+                      
+                    }
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+async function getScoreOrder() {
+    return new Promise(resolve => {
+        $.post(posturl('getScoreOrder',body = ''),async (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    data=JSON.parse(data)
+                    //console.log(JSON.stringify(data.data.data))
+                    if (data) {
+                        var t = data.data.data.length
+                        for (var i = 0; i < t; i++) {
+                            //console.log(JSON.stringify(data.data.data[i]))
+                            
+                            console.log(`兑换${i}：\n商品名称${data.data.data[i].usefulDate}创建时间${data.data.data[i].createdAt}`)
+                            datas = data.data.data[i].awardResult
+                            datas = JSON.parse(datas)
+                            console.log(`卡号${datas.cards.card.cardno}\n卡密${datas.cards.card.cardpsw}`)
+                        }
+                        //console.log(JSON.stringify(data.data.data)) 
+                        //if(data.error_code === 0) await notify.sendNotify($.name,`用户${$.index}:${$.nickname} ${data.msg}\n卡号:${data.data.cards.card.cardno}\n卡密:${data.data.cards.card.cardpsw}`)
                                                
                       
                     }

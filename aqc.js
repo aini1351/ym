@@ -1,5 +1,5 @@
 /* 
- cron "*/5 7-23 * * *" ql_aiqichaShop.js
+ cron "2-59/10 7-23 * * *" ql_aiqichaShop.js
 
  爱妻查商城监控  
  多商品请用逗号分割 格式:AQ03006,AQ03007,AQ03008 青龙变量aqcGood
@@ -20,6 +20,11 @@ aqcookie = $.isNode() ? process.env.aqcCookies : "";
 aqcGoods = $.isNode() ? process.env.aqcGood : "";
 aqcookieArr = [];
 aqcookieGoodsArr = [];
+timeout = 10000
+PUSH_PLUS_USER_AQC = process.env.PUSH_PLUS_USER_AQC ? process.env.PUSH_PLUS_USER_AQC : ''
+PUSH_PLUS_TOKEN_AQC = process.env.PUSH_PLUS_TOKEN_AQC ? process.env.PUSH_PLUS_TOKEN_AQC : ''
+TG_BOT_TOKEN_AQC = process.env.TG_BOT_TOKEN_AQC ? process.env.TG_BOT_TOKEN_AQC : ''
+TG_USER_ID_AQC = process.env.TG_USER_ID_AQC ? process.env.TG_USER_ID_AQC : ''
 
 var goodsDic = {
     AQ03006: "爱奇艺月卡",
@@ -42,6 +47,7 @@ async function checkEK () {
                 headers
             })
             msg = ''
+            //console.log(res)
             if (res.data.status == 0) {
                 var GoodsData = res.data.data;
                 if (aqcookieGoodsArr.length <= 0) {
@@ -51,7 +57,10 @@ async function checkEK () {
                         var good = aqcookieGoodsArr[a]
                         var goodName = goodsDic[good]
                         if (GoodsData[good] == true) {
-                            msg += '[' + goodName + ']' + '有货,可以去兑换啦!'
+                            
+                            msg += '[' + goodName + ']' + '有货,可以去兑换啦!\n'
+                            await pushPlusNotify_aqc('爱妻查商城监控','[' + goodName + ']' + '有货了,快去兑换啦!')
+                            await tgBotNotify_aqc('爱妻查商城监控','[' + goodName + ']' + '有货了,快去兑换啦!')
                         } else {
                             console.error(goodName + "无货,已跳过通知推送。")
                         }
@@ -71,6 +80,92 @@ async function checkEK () {
             console.log(err)
         }
         resolve();
+    });
+}
+
+function pushPlusNotify_aqc(text, desp) {
+
+    return new Promise((resolve) => {
+        if (PUSH_PLUS_TOKEN_AQC) {
+            desp = desp.replace(/[\n\r]/g, '<br>'); // 默认为html, 不支持plaintext
+            const body = {
+                token: `${PUSH_PLUS_TOKEN_AQC}`,
+                title: `${text}`,
+                content: `${desp}`,
+                topic: `${PUSH_PLUS_USER_AQC}`,
+            };
+            const options = {
+                url: `https://www.pushplus.plus/send`,
+                body: JSON.stringify(body),
+                headers: {
+                    'Content-Type': ' application/json',
+                },
+                timeout,
+            };
+            $.post(options, (err, resp, data) => {
+                try {
+                    if (err) {
+                        console.log(`push+发送${PUSH_PLUS_USER_AQC ? '一对多' : '一对一'}通知消息失败！！\n`);
+                        console.log(err);
+                    } else {
+                        data = JSON.parse(data);
+                        if (data.code === 200) {
+                            console.log(`push+发送${PUSH_PLUS_USER_AQC ? '一对多' : '一对一'}通知消息完成。\n`);
+                        } else {
+                            console.log(`push+发送${PUSH_PLUS_USER_AQC ? '一对多' : '一对一'}通知消息失败：${data.msg}\n`);
+                        }
+                    }
+                } catch (e) {
+                    $.logErr(e, resp);
+                }
+                finally {
+                    resolve(data);
+                }
+            });
+        } else {
+            resolve();
+        }
+    });
+}
+
+function tgBotNotify_aqc(text, desp) {
+    return new Promise((resolve) => {
+        if (TG_BOT_TOKEN_AQC && TG_USER_ID_AQC) {
+            const options = {
+                url: `https://api.telegram.org/bot${TG_BOT_TOKEN_AQC}/sendMessage`,
+                body: `chat_id=${TG_USER_ID_AQC}&text=${text}\n\n${desp}&disable_web_page_preview=true`,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                timeout,
+            };
+
+            $.post(options, (err, resp, data) => {
+                try {
+                    if (err) {
+                        console.log('telegram发送通知消息失败！！\n');
+                        console.log(err);
+                    } else {
+                        //console.log(data)
+                        data = JSON.parse(data);
+                        if (data.ok) {
+                            console.log('Telegram发送通知消息成功🎉。\n');
+                        } else if (data.error_code === 400) {
+                            console.log('请主动给bot发送一条消息并检查接收用户ID是否正确。\n');
+                        } else if (data.error_code === 401) {
+                            console.log('Telegram bot token 填写错误。\n');
+                        }
+                    }
+                } catch (e) {
+                    $.logErr(e, resp);
+                }
+                finally {
+                    resolve(data);
+                }
+            });
+        } else {
+            resolve();
+        }
     });
 }
 

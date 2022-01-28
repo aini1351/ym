@@ -48,7 +48,7 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             await getUserinfo()
             await getScoreOrder()
             await $.wait(1000)
-            if (time.getHours() === 8) await dailySign()
+            if (time.getHours() === 8 || time.getHours() === 17) await dailySign()
             await $.wait(1500) 
             if ($.index === 1) await getCookbookIndex()
             await $.wait(1000)

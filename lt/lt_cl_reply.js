@@ -172,6 +172,7 @@ async function gettodaysend() {
 
 
 async function reply(tid,title,reply) {
+    title = 'Re:' + title
     return new Promise(resolve => {
         $.post(posturl("post.php?",tid,title,reply), (err, resp, data) => {
             try {
@@ -428,7 +429,7 @@ function posturl(url,tid,title,reply_news) {
             
         },
         
-        body: `atc_usesign=1&atc_convert=1&atc_autourl=1&atc_title=${title}&atc_content=${reply_news}&step=2&action=reply&fid=7&tid=${tid}&atc_attachment=none&pid=&article=&touid=&verify=verify&Submit=提+交`
+        body: `atc_usesign=1&atc_convert=1&atc_autourl=1&atc_title=${title}&atc_content=${reply_news}&step=2&action=reply&fid=7&tid=${tid}&atc_attachment=none&pid=&article=&touid=&verify=verify`
 
     }
     //console.log(opt)

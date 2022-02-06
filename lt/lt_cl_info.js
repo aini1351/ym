@@ -152,7 +152,8 @@ async function getmesssage() {
                     if (data) {
                         //console.log(data)
                         if (data.indexOf('您的信箱已滿') != -1) {
-                            console.log('有新消息但查看失败，信箱已满,无法查看，请手动删除部分消息')
+                            console.log('有新消息但信箱已满,无法查看，请手动删除部分消息')
+                            message += '有新消息但信箱已满,无法查看，请手动删除部分消息'
                             isnewmessage = false
                             ismessage = true
                             return;

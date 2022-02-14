@@ -123,7 +123,7 @@ async function home() {
                         console.log("金币：" +jb)
                         //yhz=yhzmatch[1]
                         //console.log(yhz)
-                        message += '积分：'+jf+"\n福利："+fl+"\n分享："+fx+"\n精华："+jh+"\n爱心："+ax+"\n金币：" +jb+'\n\n'
+                        message += yhz + '\n积分：'+jf+"\n福利："+fl+"\n分享："+fx+"\n精华："+jh+"\n爱心："+ax+"\n金币：" +jb+'\n\n'
                         if (data.indexOf('class=\"new') != -1 || data.indexOf('提醒(') != -1) {
                             ismessage = true
                             message +=  `用户${$.index}：${username} 有新消息待处理\n\n`

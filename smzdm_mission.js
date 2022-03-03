@@ -27,7 +27,7 @@ let clickGoBuyMaxTimes = 12; // 好价点击去购买的次数
 let clickLikeProductMaxTimes = 7; // 好价点值次数
 let clickLikeArticleMaxTimes = 7; // 好文点赞次数
 let clickFavArticleMaxTimes = 7; // 好文收藏次数
-
+let nowtime = new Date()
 let magicJS = MagicJS(scriptName, "INFO");
 const $ = new Env("什么值得买自动签到");
 magicJS.unifiedPushUrl = magicJS.read("smzdm_unified_push_url") || magicJS.read("magicjs_unified_push_url");
@@ -650,7 +650,7 @@ function WebGetCurrentInfo(smzdmCookie) {
     }
   }
   magicJS.done();
-  notify.sendNotify( scriptName,result.join("\n"));
+  if ((nowtime.getDay() == 5 || nowtime.getDay() == 2) && nowtime.getHours() > 14) notify.sendNotify( scriptName,result.join("\n"));
 })();
 
 // prettier-ignore

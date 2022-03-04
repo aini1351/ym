@@ -257,7 +257,7 @@ async function getbaseinfo() {
 
 async function getbankinfo() {
     return new Promise(resolve => {
-        $.get(geturl("hack.php?H_name=bank"), (err, resp, data) => {
+        $.get(geturl("hack.php?H_name=bank"), async (err, resp, data) => {
             try {
                 if (err) {
                     $.logErr(err)
@@ -275,7 +275,13 @@ async function getbankinfo() {
                         //dqck = /定期存款：(.+?)\</.exec(data)[1]
                         console.log(`活期存款：${hqck}\n活期利息：${hqlx}\n活期存款时间：${hqcktime}\n定期存款：${dqck}\n定期利息：${dqlx}\n定期存款时间：${dqcktime}\n定期到期时间：${dqdqtime}\n总资产：${allmoney}\n`)
                         message += `活期存款：${hqck}\n活期利息：${hqlx}\n活期存款时间：${hqcktime}\n定期存款：${dqck}\n定期利息：${dqlx}\n定期存款时间：${dqcktime}\n定期到期时间：${dqdqtime}\n总资产：${allmoney}\n\n`
-                      
+                        let dqsf = /\d+ (.+?)$/.exec(dqcktime)[1]
+                        let sjdqsj = dqdqtime + ' ' + dqsf
+                        let sjdqsjdt = new Date(sjdqsj.replace("-","/")); //定期到期时间
+
+                        console.log('当前时间：' + time, '\n定期到期时间：' + sjdqsjdt)
+                        if (time < sjdqsjdt) await notify.sendNotify($.name, `用户${$.index}：${username} 定期存款已到期，请及时处理`, '', `\n`)
+                        //console.log(sjdqsjdt, time)
                     }
                 }
             } catch (e) {

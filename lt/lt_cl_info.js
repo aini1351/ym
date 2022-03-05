@@ -279,8 +279,8 @@ async function getbankinfo() {
                         let sjdqsj = dqdqtime + ' ' + dqsf
                         let sjdqsjdt = new Date(sjdqsj.replace("-","/")); //定期到期时间
 
-                        console.log('当前时间：' + time, '\n定期到期时间：' + sjdqsjdt)
-                        if (time < sjdqsjdt) await notify.sendNotify($.name, `用户${$.index}：${username} 定期存款已到期，请及时处理`, '', `\n`)
+                        console.log('当前时间：' + time.format("yyyy-MM-dd hh:mm:ss"), '\n定期到期时间：' + sjdqsj)
+                        if (time > sjdqsjdt) await notify.sendNotify($.name, `用户${$.index}：${username} 定期存款已到期，请及时处理`, '', `\n`)
                         //console.log(sjdqsjdt, time)
                     }
                 }
@@ -315,7 +315,26 @@ function geturl(url) {
 
 }
 
-
+Date.prototype.format = function(fmt) { //格式化时间
+     var o = { 
+        "M+" : this.getMonth()+1,                 //月份 
+        "d+" : this.getDate(),                    //日 
+        "h+" : this.getHours(),                   //小时 
+        "m+" : this.getMinutes(),                 //分 
+        "s+" : this.getSeconds(),                 //秒 
+        "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+        "S"  : this.getMilliseconds()             //毫秒 
+    }; 
+    if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+    }
+     for(var k in o) {
+        if(new RegExp("("+ k +")").test(fmt)){
+             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+         }
+     }
+    return fmt; 
+} 
 
 // prettier-ignore
 

@@ -265,10 +265,10 @@ async function getbankinfo() {
                     if (data) {
                         //console.log(data)
                         hqck = /活期存款：(.+?)\</.exec(data)[1]
-                        hqlx = /利息：(.+?)\</.exec(data)[1]
+                        hqlx = /利息：(.+?) USD\</.exec(data)[1]
                         hqcktime = /\>存款时间(.+?)\</.exec(data)[1]
                         dqck = /定期存款：(.+?)\</.exec(data)[1]
-                        dqlx = /定期存款：.+?　　利息：(.+?)\</.exec(data)[1]
+                        dqlx = /定期存款：.+?　　利息：(.+?) USD\</.exec(data)[1]
                         dqcktime = /定期存款：.+?存款时间：(.+?)\</.exec(data)[1]
                         dqdqtime = /到期时间：(.+?)\</.exec(data)[1]
                         allmoney = /总资产：(.+?)USD/.exec(data)[1]
@@ -280,7 +280,18 @@ async function getbankinfo() {
                         let sjdqsjdt = new Date(sjdqsj.replace("-","/")); //定期到期时间
 
                         console.log('当前时间：' + time.format("yyyy-MM-dd hh:mm:ss"), '\n定期到期时间：' + sjdqsj)
-                        if (time > sjdqsjdt) await notify.sendNotify($.name, `用户${$.index}：${username} 定期存款已到期，请及时处理`, '', `\n`)
+                        //if (time > sjdqsjdt) await notify.sendNotify($.name, `用户${$.index}：${username} 定期存款已到期，请及时处理`, '', `\n`)
+                        
+                        if (dqlx > 1) {
+                            console.log('定期存款已到期，准备去转 1u 刷新')
+                            await flushusd('2','draw','30')//定期 取
+                        }
+                        //console.log('活期利息： ' + hqlx)
+                        if (hqlx === '0') {
+                            console.log('活期存款已到期，准备去转 1u 刷新')
+                            await flushusd('1','save','1') //活期 存
+                        }
+                        //let dqck = 
                         //console.log(sjdqsjdt, time)
                     }
                 }
@@ -292,6 +303,81 @@ async function getbankinfo() {
         })
     })
 }
+
+
+
+async function flushusd(type,action,flushmoney) {
+    var a,b
+    if (type == '1') {
+        a = '活期'
+    } else {
+        a = '定期'
+    }
+    if (action == 'save') {
+        b = '存'
+    } else if(action == 'draw') {
+        b = '取'
+    }
+    return new Promise(resolve => {
+        $.post(posturl("hack.php?H_name=bank&",type,action,flushmoney), async (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                        //console.log(data)
+                        
+                        if (data.indexOf('完成' ) != -1) {
+                            console.log(`${a}${b} ${flushmoney}u 成功`) 
+                            if (type == '2') await notify.sendNotify(`账号 ${$.index}：${a}到期并${b} ${flushmoney}u 成功`)                  
+                        } else {
+                            console.log(`${a}${b} ${flushmoney}u 失败`) 
+                            await notify.sendNotify(`账号 ${$.index}：${a}到期但${b} ${flushmoney}u 失败`)
+                        }
+
+                    } else {
+                        console.log(resp)
+                    }
+                    
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
+
+
+
+function posturl(url,type,action,flushmoney) {
+    let opt = {
+        url: "http://t66y.com/" + url,
+        headers: {
+            //'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6,zh-TW;q=0.5',
+
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cookie': cookie,
+            'DNT': '1',
+            'Host': 't66y.com',
+            'Origin': 'null',
+            'Proxy-Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': UA,
+
+            
+        },
+        //1 活期 2定期  save：存  draw: 取
+        body: `action=${action}&btype=${type}&${action}money=${flushmoney}`
+
+    }
+    //console.log(opt)
+    return opt
+}
+
 
 function geturl(url) {
     const options = {

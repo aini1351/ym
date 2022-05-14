@@ -13,10 +13,10 @@ SMZDM_COOKIE 什么值得买Cookie 多个 &区分
 
 ================Loon==============
 [Script]
-cron "43 1/8 * * *" script-path=smzdm_mission.js,tag=什么值得买自动签到
+cron "43 7,19 * * *" script-path=smzdm_mission.js,tag=什么值得买自动签到
 
 ===============Surge=================
-什么值得买自动签到 = type=cron,cronexp="43 1/8 * * *",wake-system=1,timeout=3600,script-path=smzdm_mission.js
+什么值得买自动签到 = type=cron,cronexp="43 7,19 * * *",wake-system=1,timeout=3600,script-path=smzdm_mission.js
 
 ============小火箭=========
 什么值得买自动签到 = type=cron,script-path=smzdm_mission.js, cronexpr="43 1/8 * * *", timeout=3600, enable=true

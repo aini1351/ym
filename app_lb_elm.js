@@ -65,7 +65,9 @@ Date.prototype.Format = function (fmt) { //author: meizz
       if (process.env.elmck && process.env.elmck.indexOf('@') > -1) {
         elmckArr = process.env.elmck.split('@');
         console.log(`您选择的是用"@"隔开\n`)
-
+      } else if (process.env.elmck && process.env.elmck.indexOf('\n') > -1) {
+        elmckArr = process.env.elmck.split('\n');
+        console.log(`您选择的是用"换行"隔开\n`)
       } else {
         elmcks = [process.env.elmck]
       };

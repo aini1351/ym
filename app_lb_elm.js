@@ -904,11 +904,11 @@ function menu() {
               let missionType = dataArr[i].attribute.missionType
               if (missionType == 'SIMPLESIGNIN') {
                 console.log(`任务：${dataArr[i].attribute.subTitle}`);
-                if (i < 3) allMessage += `\n任务：${dataArr[i].attribute.subTitle}`;
+                allMessage += `\n任务：${dataArr[i].attribute.subTitle}`;
 
                 let missionDefId = dataArr[i].attribute.missionDefId
                 let missionCollectionId = dataArr[i].attribute.missionCollectionId
-                await running(missionDefId, missionCollectionId, missionType)
+                await running(missionDefId, missionCollectionId, missionType,i)
                 console.log(`随机等待15~16.5秒`)
                 allMessage += `\n随机等待15~16.5秒`;
                 // let s = rand(15100, 16500)
@@ -934,7 +934,7 @@ function menu() {
   })
 }
 //执行任务
-function running(missionDefId, missionCollectionId, missionType) {
+function running(missionDefId, missionCollectionId, missionType,i) {
   return new Promise((resolve) => {
     let url = {
       url: `https://h5.ele.me/restapi/biz.svip_scene/svip/engine/xSupply?params[]=%7B%22tagCode%22:%22${acceptTagCode}%22,%22extra%22:%7B%22missionDefId%22:${missionDefId},%22missionCollectionId%22:${missionCollectionId},%22missionType%22:%22${missionType}%22%7D%7D&bizCode=biz_code_main&longitude=113.38713836669${num}&latitude=22.931276321411${num}`,
@@ -942,13 +942,14 @@ function running(missionDefId, missionCollectionId, missionType) {
         "Cookie": elmck
       }
     }
+    var renwucs = i
     $.get(url, async (err, resp, data) => {
       try {
         // console.log(data);
         let result = JSON.parse(data);
         if (result.data[0].attribute.code) {
           console.log(result.data[0].attribute.message);
-          allMessage += `\n` + result.data[0].attribute.message;
+          //allMessage += `\n` + result.data[0].attribute.message;
           if (result.data[0].attribute.message == '成功') {
             arr.push({ 'DefId': missionDefId, 'CollectionId': missionCollectionId })
           }

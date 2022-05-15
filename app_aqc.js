@@ -59,8 +59,8 @@ async function checkEK () {
                         if (GoodsData[good] == true) {
                             
                             msg += '[' + goodName + ']' + '有货,可以去兑换啦!\n'
-                            await pushPlusNotify_aqc('爱妻查商城监控','[' + goodName + ']' + '有货了,快去兑换啦!')
-                            await tgBotNotify_aqc('爱妻查商城监控','[' + goodName + ']' + '有货了,快去兑换啦!')
+                            ///await pushPlusNotify_aqc('爱妻查商城监控','[' + goodName + ']' + '有货了,快去兑换啦!')
+                            ///await tgBotNotify_aqc('爱妻查商城监控','[' + goodName + ']' + '有货了,快去兑换啦!')
                         } else {
                             console.error(goodName + "无货,已跳过通知推送。")
                         }
@@ -71,6 +71,8 @@ async function checkEK () {
                 if (msg != '') {
                     msg += '\n\n兑换地址: https://qiye.baidu.com/usercenter/#/mall'
                     await notify.sendNotify($.name, msg, '');
+                    await pushPlusNotify_aqc('爱妻查商城监控',msg)
+                    await tgBotNotify_aqc('爱妻查商城监控',msg)
                 }
             } else {
                 console.log("API请求错误" + res.data.msg)
@@ -132,7 +134,7 @@ function tgBotNotify_aqc(text, desp) {
     return new Promise((resolve) => {
         if (TG_BOT_TOKEN_AQC && TG_USER_ID_AQC) {
             const options = {
-                url: `https://api.telegram.org/bot${TG_BOT_TOKEN_AQC}/sendMessage`,
+                url: `https://${process.env.TG_API_HOST}/bot${TG_BOT_TOKEN_AQC}/sendMessage`,
                 body: `chat_id=${TG_USER_ID_AQC}&text=${text}\n\n${desp}&disable_web_page_preview=true`,
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

@@ -92,6 +92,9 @@ async function start(num) {
 	await box_info();
 	await $.wait(2 * 1000);
     
+	console.log("开始 三餐");
+	await do_sancan();
+	await $.wait(2 * 1000);
 
 	if (local_hours() == 9 || local_hours() == 21) {
 		console.log("开始 分享");
@@ -241,6 +244,56 @@ async function task_sign() {
 
 }
 
+//查询三餐
+async function do_sancan() {
+	let url = {
+		url: `https://nebula.kuaishou.com/rest/n/nebula/dish/detail`,//
+		headers: {
+			// "Host": "nebula.kuaishou.com",
+			'Cookie': ck[0],
+		},
+	};
+	let result = await httpGet(url, `查询三餐`);
+    //console.log(local_hours())
+    if (result.result == 1) {
+        result = result.data
+        if (local_hours() == 8 || local_hours() == 12 || local_hours() == 17 || local_hours() == 21) {
+            console.log(`去领取三餐`)
+            await sancan()
+        } else {
+            console.log(`不在三餐时间`)
+        }
+    } else {
+        //console.log(`出错了`)
+        console.log(result.error_msg)
+        //isNotify = true
+    }
+
+}
+
+//领取三餐
+async function sancan() {
+	let url = {
+		url: `https://nebula.kuaishou.com/rest/n/nebula/dish/report`,//
+		headers: {
+			// "Host": "nebula.kuaishou.com",
+			'Cookie': ck[0],
+		},
+	};
+	let result = await httpPost(url, `领取三餐`);
+    //console.log(result)
+    if (result.result == 1) {
+        result = result.data
+        console.log(`${result.title} ：${result.amount}`)
+        msg += `${result.title} ：${result.amount}`
+        isNotify = true
+    } else {
+        //console.log(`出错了`)
+        console.log(result.error_msg)
+        //isNotify = true
+    }
+
+}
 
 //周周赚助力
 async function zzz_help(code) {

@@ -22,7 +22,7 @@ status = (status = ($.getval("fhxzstatus") || "1")) > 1 ? `${status}` : ""; // �
 let elmckArr = []
 let allMessage = '';
 let time = Math.round(Date.now() / 1000)
-let elmck = $.isNode() ? (process.env.elmck ? process.env.elmck : "") : ($.getdata('elmck') ? $.getdata('elmck') : "")
+let elmck = $.isNode() ? (process.env.elmCookie ? process.env.elmCookie : "") : ($.getdata('elmck') ? $.getdata('elmck') : "")
 let elmdh = ($.isNode() ? process.env.elmdh : $.getdata('elmdh')) || 'false';
 let elmcks = ""
 let acceptTagCode, queryTagCode, arr = []
@@ -62,14 +62,14 @@ Date.prototype.Format = function (fmt) { //author: meizz
       await qswcdl()
 
     } else {
-      if (process.env.elmck && process.env.elmck.indexOf('@') > -1) {
-        elmckArr = process.env.elmck.split('@');
+      if (process.env.elmCookie && process.env.elmCookie.indexOf('@') > -1) {
+        elmckArr = process.env.elmCookie.split('@');
         console.log(`您选择的是用"@"隔开\n`)
-      } else if (process.env.elmck && process.env.elmck.indexOf('\n') > -1) {
-        elmckArr = process.env.elmck.split('\n');
+      } else if (process.env.elmCookie && process.env.elmCookie.indexOf('\n') > -1) {
+        elmckArr = process.env.elmCookie.split('\n');
         console.log(`您选择的是用"换行"隔开\n`)
       } else {
-        elmcks = [process.env.elmck]
+        elmcks = [process.env.elmCookie]
       };
       Object.keys(elmcks).forEach((item) => {
         if (elmcks[item]) {

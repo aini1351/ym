@@ -4,17 +4,16 @@
  * 
  * 快手极速版  请使用完整版ck
  * 
- * cron 0-59/30 6-20 * * *  yml2213_javascript_master/ksjsb.js
+ * cron 45 6-22 * * *  yml2213_javascript_master/ksjsb.js
  * 
  * 5-13	完成签到,宝箱信息功能 --脚本开源,欢迎 pr
  * 5-13	增加箱提示,增加分享任务
- * 
+ * 三餐
  * 
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
  * 变量格式: export ksjsb_data='xxxxx'  多个账号用 @分割 或者 换行分割
  *
- * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 const $ = new Env("快手极速版");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -27,6 +26,8 @@ let ck = "";
 let usre_name;
 let codeArr = ['2771222874395655','2771294317056588','2771282441544165','2771304230195913','2771323229770126','2771274956018245']
 let code = '', isNotify = false
+let uaArr = ['Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.226 KsWebView/1.8.90.488 (rel;r) Mobile Safari/537.36 Yoda/2.8.3-rc1 ksNebula/10.3.41.3359 OS_PRO_BIT/64 MAX_PHY_MEM/11600 AZPREFIX/zw ICFO/0 StatusHT/29 TitleHT/44 NetType/WIFI ISLP/0 ISDM/0 ISLB/0 locale/zh-cn evaSupported/false CT/0',
+'']
 ///////////////////////////////////////////////////////////////////
 let Version = '\n yml   2022/5/13-2      完成签到,宝箱,分享 功能,请使用完整版ck\n'
 let thank = `\n 感谢 xx 的投稿\n`
@@ -102,7 +103,7 @@ async function start(num) {
 		await $.wait(2 * 1000);
 	}
   
-    if (local_hours() == 9 || local_hours() == 21) {
+    if (local_hours() == 9 || local_hours() == 11) {
         console.log("开始 周周赚",code);
         var jixu = true
         for (var e = 0; e < codeArr.length; e++) {
@@ -301,14 +302,14 @@ async function zzz_help(code) {
 		url: `https://nebula.kuaishou.com/rest/zt/encourage/assistance/friendAssist`,
 		headers: {
 			// "Host": "nebula.kuaishou.com",
-			'Cookie': 'kpn=NEBULA; kpf=ANDROID_PHONE; did=ANDROID_' + randomId(16) + '; ver=9.10; appver=9.10.40.2474; language=zh-cn; countryCode=CN; sys=ANDROID_5.1; client_key=2ac2a76d; ' + ck[0].match(/kuaishou.api_st.+?;/)[0],
+			'Cookie': 'kpn=NEBULA; kpf=ANDROID_PHONE; did=ANDROID_' + randomString(16, 'ck') + '; ver=9.10; appver=9.10.40.2474; language=zh-cn; countryCode=CN; sys=ANDROID_5.1; client_key=2ac2a76d; ' + ck[0].match(/kuaishou.api_st.+?;/)[0],
             'Host': 'nebula.kuaishou.com',
             'Origin': 'https://nebula.kuaishou.com',
             'Content-Type': 'application/json',
             'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
             'Accept': '*/*',
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 ksNebula/9.9.10.1646 ISLP/0 StatusHT/47 ISDM/0 TitleHT/44 NetType/WIFI ICFO/0 locale/zh-Hans CT/0 Yoda/2.6.8.4 ISLB/0 AZPREFIX/zw BHT/102 WebViewType/WK',
+            'User-Agent': `Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.2${randomString(5, 'ua')}.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4${randomString(3, 'ua')}.226 KsWebView/1.8.90.488 (rel;r) Mobile Safari/537.36 Yoda/2.8.3-rc1 ksNebula/10.3.41.${randomString(4, 'ua')} OS_PRO_BIT/64 MAX_PHY_MEM/1${randomString(4, 'ua')} AZPREFIX/zw ICFO/0 StatusHT/29 TitleHT/44 NetType/WIFI ISLP/0 ISDM/0 ISLB/0 locale/zh-cn evaSupported/false CT/0`,
             'Content-Length': '35',
             'Referer': 'https://nebula.kuaishou.com/nebula/daily-invite',
             'Accept-Language': 'zh-cn'
@@ -549,10 +550,17 @@ async function SendMsg(message) {
  * 随机数生成
  */
 
-function randomString(e) {
+function randomString(e,type) {
 	e = e || 32;
-	var t = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890",
-		a = t.length,
+    var t = ''
+    if (type == "ua") {
+        t = "1234567890"
+    } else if (type == 'ck') {
+        t = "abcdef1234567890"
+    } else {
+        t = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890"
+    }
+	var a = t.length,
 		n = "";
 
 	for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));

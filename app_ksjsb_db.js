@@ -97,7 +97,7 @@ async function start(num) {
 	await do_sancan();
 	await $.wait(2 * 1000);
 
-	if (local_hours() == 9 || local_hours() == 21) {
+	if (local_hours() == 9 || local_hours() == 20) {
 		console.log("开始 分享");
 		await do_Share();
 		await $.wait(2 * 1000);

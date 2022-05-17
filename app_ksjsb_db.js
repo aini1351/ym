@@ -103,7 +103,7 @@ async function start(num) {
 		await $.wait(2 * 1000);
 	}
   
-    if (local_hours() == 9 || local_hours() == 11) {
+    if (local_hours() == 9 || local_hours() == 20) {
         console.log("开始 周周赚",code);
         var jixu = true
         for (var e = 0; e < codeArr.length; e++) {

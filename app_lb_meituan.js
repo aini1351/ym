@@ -11,7 +11,7 @@
 // * cron 5 0,7,22 * * *  
 //环境变量 meituanyq 优惠券邀请码
 
-const $ = new Env('美团');
+const $ = new Env('萝卜美团');
 
 let status;
 let sjpz = ($.isNode() ? process.env.sjpz : $.getdata('sjpz')) || 'false';

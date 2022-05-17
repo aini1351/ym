@@ -15,7 +15,7 @@ APP : 饿了么
 变量：SM_STARTTIME 值:默认为60，当为60时，9点59分运行脚本，10点准时开枪，如果网络慢可以设置为59，则9点59分59秒开抢。
 */
 
-const $ = new Env('饿了么吃货豆');
+const $ = new Env('萝卜饿了么');
 let status;
 const notify = $.isNode() ? require('./sendNotify') : '';
 status = (status = ($.getval("fhxzstatus") || "1")) > 1 ? `${status}` : ""; // 账号扩展字符
@@ -81,8 +81,8 @@ Date.prototype.Format = function (fmt) { //author: meizz
 
     }
   }
-  await sleep(50 * 1000)
-  await notify.sendNotify(`饿了么吃货豆`, `${allMessage}`, '')
+  await sleep(40 * 1000)
+  await notify.sendNotify(`萝卜饿了么`, `${allMessage}`, '')
 
 })()
   .catch((e) => $.logErr(e))

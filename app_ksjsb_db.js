@@ -24,7 +24,7 @@ let ckStr = process.env.ksjsb_data;
 let msg = "";
 let ck = "";
 let usre_name;
-let codeArr = ['2771222874395655','2771294317056588','2771282441544165','2771304230195913','2771323229770126','2771274956018245']
+let codeArr = ['2787509134241135','2787527208964520']
 let code = '', isNotify = false
 let uaArr = ['Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/90.0.4430.226 KsWebView/1.8.90.488 (rel;r) Mobile Safari/537.36 Yoda/2.8.3-rc1 ksNebula/10.3.41.3359 OS_PRO_BIT/64 MAX_PHY_MEM/11600 AZPREFIX/zw ICFO/0 StatusHT/29 TitleHT/44 NetType/WIFI ISLP/0 ISDM/0 ISLB/0 locale/zh-cn evaSupported/false CT/0',
 '']

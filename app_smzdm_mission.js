@@ -34,13 +34,19 @@ magicJS.unifiedPushUrl = magicJS.read("smzdm_unified_push_url") || magicJS.read(
 const notify = $.isNode() ? require('./sendNotify') : '';
 let result = []
 let cookieSMZDMs = []
+
 if (process.env.SMZDM_COOKIE) {
   if (process.env.SMZDM_COOKIE.indexOf('&') > -1) {
+    console.log(`您的cookie使用&分开`)
     cookieSMZDMs = process.env.SMZDM_COOKIE.split('&');
-  } else if (process.env.JD_COOKIE.indexOf('\n') > -1) {
+
+  } else if (process.env.SMZDM_COOKIE.indexOf('\n') > -1) {
+      console.log(`您的cookie使用换行分开`)
     cookieSMZDMs = process.env.SMZDM_COOKIE.split('\n');
+
   } else {
     cookieSMZDMs = [process.env.SMZDM_COOKIE];
+    console.log(`您只有一个cookie`)
   }
 }
 
@@ -478,7 +484,7 @@ function WebGetCurrentInfo(smzdmCookie) {
   let content = "";
   // 获取Cookie
   // let smzdmCookie = magicJS.read(smzdmCookieKey);
-
+   // console.log(cookieSMZDMs.length)
   if (!!cookieSMZDMs === false) {
     // magicJS.logWarning("没有读取到什么值得买有效cookie，请访问zhiyou.smzdm.com进行登录");
     // magicJS.notify(scriptName, "", "❓没有获取到Web端Cookie，请先进行登录。");

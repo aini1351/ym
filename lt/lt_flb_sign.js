@@ -20,6 +20,8 @@ if (process.env.flbcookie) {
     flbcookiesArr = [process.env.flbcookie];
   }
 }
+let time = new Date()
+
 !(async () => {
     if (!flbcookiesArr[0]) {
         $.msg($.name, '请先添加cookie，变量名 flbcookie');
@@ -35,6 +37,8 @@ if (process.env.flbcookie) {
         console.log("获取到论坛最新地址："+ Host) 
     }
     ismessage = false
+    await $.wait(600)
+    console.log(new Date())
     for (let i = 0; i < flbcookiesArr.length; i++) {
         if (flbcookiesArr[i]) {
             cookie = flbcookiesArr[i]
@@ -43,25 +47,28 @@ if (process.env.flbcookie) {
             islogin = true
             signsuc = true
             console.log(`\n******开始【账号${$.index}】*********\n`);
+            console.log(new Date())
             await getformhash()
             if (!islogin) {
                 console.log("cookie失效")
                 await notify.sendNotify($.name,`用户${$.index} cookie已失效`);
                 continue
-            }
-            //await $.wait(1000)
+            }            
             if (!issign) {
+                
                 console.log(`用户${$.index}: ${username}尚未签到，现在去签到`)
                 await sign(formhash);
                 if (!signsuc) {
-                    await $.wait(2000)
-                    await sign(formhash);
+                    //await $.wait(500)
+                    //await sign(formhash);
                 }
             }
-            await home()
+            
+            if (time.getHours() != 0 && time.getHours() != 23) await home()
 
         }
     }
+    if (process.env.JSRUN && (time.getHours() == 19 || time.getHours() == 10)) await jsrunsign()
     if (message !== '' && ismessage) {
         if ($.isNode()) {
             await notify.sendNotify($.name, message, '', `\n`);
@@ -77,6 +84,39 @@ if (process.env.flbcookie) {
         $.done();
     })
 
+
+function jsrunsign() {
+    const options = {
+        url: 'https://jsrun.net/uc/getTodayCash',
+        headers: {
+
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+            "Connection": "keep-alive",
+            "Cookie": process.env.JSRUN,
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Accept-Encoding": "gzip, deflate",
+        }
+    };
+    return new Promise(resolve => {
+        $.get(options, (err, resp, data) => {
+            try {
+                if (err) {
+                    $.logErr(err)
+                } else {
+                    if (data) {
+                        console.log(data)
+                         
+                    }
+                }
+            } catch (e) {
+                $.logErr(e)
+            } finally {
+                resolve();
+            }
+        })
+    })
+}
 
 async function home() {
     const options = {

@@ -71,7 +71,7 @@ async function tips(ckArr) {
         
 	}
     console.log('本次运行是否通知：' + isNotify)
-	if (isNotify) await SendMsg(msg);
+	if (isNotify&&local_hours()==20) await SendMsg(msg);
 })()
 	.catch((e) => $.logErr(e))
 	.finally(() => $.done());
@@ -103,7 +103,7 @@ async function start(num) {
 		await $.wait(2 * 1000);
 	}
   
-    if (local_hours() == 9 || local_hours() == 20) {
+    if (local_hours() == 20) {
         console.log("开始 周周赚",code);
         var jixu = true
         for (var e = 0; e < codeArr.length; e++) {

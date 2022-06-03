@@ -20,7 +20,7 @@ const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知，1为打开通知,默认为1
 const debug = 0 		//0为关闭调试，1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
-let ckStr = process.env.ksjsb_data;
+let ckStr = process.env.ksjsbCookie;
 let msg = "";
 let ck = "";
 let usre_name;
@@ -58,7 +58,7 @@ async function tips(ckArr) {
 }
 
 !(async () => {
-	let ckArr = await getCks(ckStr, "ksjsb_data");
+	let ckArr = await getCks(ckStr, "ksjsbCookie");
 	await tips(ckArr);
 	for (let index = 0; index < ckArr.length; index++) {
 		let num = index + 1;

@@ -656,7 +656,7 @@ function WebGetCurrentInfo(smzdmCookie) {
     }
   }
   magicJS.done();
-  if ((nowtime.getDay() == 5 || nowtime.getDay() == 2) && nowtime.getHours() > 14) notify.sendNotify( scriptName,result.join("\n"));
+  if (nowtime.getDay() == 5 && nowtime.getHours() > 14) notify.sendNotify( scriptName,result.join("\n"));
 })();
 
 // prettier-ignore

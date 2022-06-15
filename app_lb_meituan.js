@@ -46,7 +46,7 @@ let num = rand(10, 99), slcks = "",userId,uuid,inviteCode
 
         await qswcdl();
 
-        await notify.sendNotify(`萝卜美团`, `${allMessage}`, '')
+        //await notify.sendNotify(`萝卜美团`, `${allMessage}`, '')
 
     }
 })()

@@ -77,7 +77,7 @@ Date.prototype.Format = function (fmt) { //author: meizz
         }
       })
 
-      await qswcdl()
+      //await qswcdl()
 
     }
   }

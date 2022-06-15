@@ -77,12 +77,12 @@ Date.prototype.Format = function (fmt) { //author: meizz
         }
       })
 
-      //await qswcdl()
+      await qswcdl()
 
     }
   }
   await sleep(40 * 1000)
-  await notify.sendNotify(`萝卜饿了么`, `${allMessage}`, '')
+  //await notify.sendNotify(`萝卜饿了么`, `${allMessage}`, '')
 
 })()
   .catch((e) => $.logErr(e))

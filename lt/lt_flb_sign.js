@@ -46,6 +46,7 @@ let time = new Date()
             $.nickName = '';
             islogin = true
             signsuc = true
+            issign = false
             console.log(`\n******开始【账号${$.index}】*********\n`);
             console.log(new Date())
             await getformhash()
@@ -60,7 +61,7 @@ let time = new Date()
                 await sign(formhash);
                 if (!signsuc) {
                     //await $.wait(500)
-                    //await sign(formhash);
+                    await sign(formhash);
                 }
             }
             

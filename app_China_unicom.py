@@ -225,16 +225,26 @@ class China_Unicom:
     def query_score(self):
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryUserScore"
         date = datetime.today().__format__("%Y%m%d%H%M%S")
-        crypt_text = f'{{"activeIndex":461,"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        crypt_text = f'{{"activeIndex":{self.activeIndex},"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
         data = self.req(url, crypt_text)
         total_score = data["data"]["validScore"]
         self.lotter_num = int(total_score / 50)
         self.print_now(f"你的账号当前有积分{total_score}, 可以抽奖{self.lotter_num}次")
 
+    def get_activetion_id(self):
+        url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryActiveInfo"
+        date = datetime.today().__format__("%Y%m%d%H%M%S")
+        crypt_text = f'{{"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        data = self.req(url, crypt_text)
+        if data["code"] == "0000":
+            self.activeIndex = data["data"]["activeindex"]
+        else:
+            self.print_now(f"活动id获取失败 将影响抽奖和查询积分")
+
     def lotter(self):
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/handleDrawLottery"
         date = datetime.today().__format__("%Y%m%d%H%M%S")
-        crypt_text = f'{{"activeIndex":461,"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        crypt_text = f'{{"activeIndex":{self.activeIndex},"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
         data = self.req(url, crypt_text)
         if data["code"] == "0000":
             self.print_now(f"抽奖成功, 获得{data['data']['prizename']}")
@@ -281,6 +291,7 @@ class China_Unicom:
         self.referer_login()
         self.get_userinfo()
         self.watch_video()
+        self.get_activetion_id()
         self.read_novel()
         self.query_score()
         self.watch_ad()

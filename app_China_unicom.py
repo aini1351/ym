@@ -159,11 +159,14 @@ class China_Unicom:
             self.pushplus("联通app大转盘", msg)
         if tgbot_token != "" and tg_userId != "":
             self.tgpush(f"联通app大转盘:\n{msg}")
+
     def req(self, url, crypt_text):
         body = {
             "sign": base64.b64encode(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text)).decode()
         }
         self.headers["Content-Length"] = str(len(str(body)) - 1)
+        #print(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text))
+        #print(self.headers["accesstoken"][-16:])
         data = post(url, headers=self.headers, json=body).json()
         return data
     def referer_login(self):
@@ -286,14 +289,63 @@ class China_Unicom:
                 self.print_now(f"查询成功 你当前有话费红包{can_use_red} 不足兑换的最低额度")
                 #self.push(f"账户{phone} \n你当前有话费红包{can_use_red} 不足兑换的最低额度")
 
+    def query_way(self): #查询任务完成情况
+        url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryScoreWay"
+        date = datetime.today().__format__("%Y%m%d%H%M%S")
+        crypt_text = f'{{"activeIndex":{self.activeIndex},"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        data = self.req(url, crypt_text)       
+        data = data["data"]
+
+        for x in data:
+            if x['taskname'] == '看一次视频得20幸运值':
+                print('\n当前任务：' + x['taskname'])
+                if x['daylimit'] == x['gainnum']:
+                    print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                else:
+                    print('未完成，已获得分数：' + str(x['gainscore']))
+                    print('还可以完成' + str(x['daylimit'] - x['gainnum']) + '次')
+                    print('去完成。。。')
+                    self.watch_video()
+                    print('\n')
+            elif x['taskname'] == '阅读3章得1幸运值':
+                print('当前任务：' + x['taskname'])
+                if x['daylimit'] == x['gainnum']:
+                    print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                else:
+                    print('未完成，已获得分数：' + str(x['gainscore']))
+                    print('还可以完成' + str(x['daylimit'] - x['gainnum']) + '次')
+                    print('去完成。。。')
+                    self.read_novel()
+                    print('\n')
+            elif x['taskname'] == '抽奖满8次得100幸运值':
+                cs = x['mapList'][0]
+                print('当前任务：' + x['taskname'])
+                #print(cs)
+                if x['totalNum'] >= int(cs['bindvalue']):
+                    print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                else:
+                    print('未完成，进度：' + str(x['totalNum']) + '/' + str(x['mapList'][0]['bindvalue']) + '\n')
+            elif x['taskname'] == '抽奖满2天得100幸运值':
+                cs = x['mapList'][0]
+                print('当前任务：' + x['taskname'])
+                #print(cs)
+                if x['totalNum'] >= int(cs['bindvalue']):
+                    print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                else:
+                    print('未完成，进度：' + str(x['totalNum']) + '/' + str(x['mapList'][0]['bindvalue']) + '\n')                    
+                
+
+
 
     def main(self):
+
         self.referer_login()
         self.get_userinfo()
-        self.watch_video()
-        self.get_activetion_id()
-        self.read_novel()
-        self.query_score()
+        self.get_activetion_id() #获取获得id
+        self.query_way() #查询任务完成情况
+        #self.watch_video()        
+        #self.read_novel()        
+        self.query_score()       
         self.watch_ad()
         if unicom_lotter:
             for i in range(self.lotter_num):
@@ -301,12 +353,15 @@ class China_Unicom:
                 sleep(2)
             self.query_score()
         self.query_red()
+        
         #exit(0)
 
 
 if __name__ == "__main__":
     print('共' + str(len(phone_numArr)) + '个账户')
+    c = 0
     for i in phone_numArr:
-        print('\n当前账户：' + str(i) + '\n')
+        c = c + 1
+        print('\n账户' + str(c) + '：' + str(i) + '\n')
         China_Unicom(i).main()
     exit(0)

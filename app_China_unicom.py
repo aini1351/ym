@@ -28,6 +28,7 @@ class PrpCrypt(object):
 
     def __init__(self, key):
         self.key = key.encode('utf-8')
+        #print(object)
         self.mode = AES.MODE_CBC
 
     # 加密函数，如果text不足16位就用空格补足为16位，
@@ -43,6 +44,7 @@ class PrpCrypt(object):
         text = self.pkcs7_padding(text)
 
         self.ciphertext = cryptor.encrypt(text)
+        #print(self.key)
 
         # 因为AES加密时候得到的字符串不一定是ascii字符集的，输出到终端或者保存时候可能存在问题
         # 所以这里统一把加密后的字符串转化为16进制字符串
@@ -166,7 +168,7 @@ class China_Unicom:
         }
         self.headers["Content-Length"] = str(len(str(body)) - 1)
         #print(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text))
-        #print(self.headers["accesstoken"][-16:])
+        #print(self.key)
         data = post(url, headers=self.headers, json=body).json()
         return data
     def referer_login(self):
@@ -197,7 +199,7 @@ class China_Unicom:
             exit(0)
 
     def watch_video(self):
-        self.print_now("看广告获取积分任务: ")
+        self.print_now("看视频获取积分任务: ")
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/obtainScoreByAd"
         date = datetime.today().__format__("%Y%m%d%H%M%S")
         crypt_text = f'{{"value":"947728124","timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
@@ -283,11 +285,20 @@ class China_Unicom:
         if data["code"] == "0000":
             can_use_red = data["data"]["usableNum"] / 100
             if can_use_red >= 3:
-                self.print_now(f"查询成功 你当前有话费红包{can_use_red} 可以去兑换了")
+                self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 可以去兑换了")
                 self.push(f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击比得10元话费大转盘")
             else:
-                self.print_now(f"查询成功 你当前有话费红包{can_use_red} 不足兑换的最低额度")
+                self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 不足兑换的最低额度")
                 #self.push(f"账户{phone} \n你当前有话费红包{can_use_red} 不足兑换的最低额度")
+
+    def exchangescore(self,gaintype): #领取月度任务奖励
+        url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/exchangeActiveScore"
+        date = datetime.today().__format__("%Y%m%d%H%M%S")
+        crypt_text = f'{{"gaintype":{gaintype},"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        data = self.req(url, crypt_text) 
+        self.print_now(data)     
+        
+
 
     def query_way(self): #查询任务完成情况
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryScoreWay"
@@ -295,7 +306,7 @@ class China_Unicom:
         crypt_text = f'{{"activeIndex":{self.activeIndex},"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
         data = self.req(url, crypt_text)       
         data = data["data"]
-
+        
         for x in data:
             if x['taskname'] == '看一次视频得20幸运值':
                 print('\n当前任务：' + x['taskname'])
@@ -322,7 +333,12 @@ class China_Unicom:
                 print('当前任务：' + x['taskname'])
                 #print(cs)
                 if x['totalNum'] >= int(cs['bindvalue']):
-                    print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                    if x['gainscore'] == cs['score']:
+                        print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                    else:
+                        print('已完成但未领取奖励，准备去领取。。。')
+                        self.exchangescore(x['tasktype'])
+                        print('\n')
                 else:
                     print('未完成，进度：' + str(x['totalNum']) + '/' + str(x['mapList'][0]['bindvalue']) + '\n')
             elif x['taskname'] == '抽奖满2天得100幸运值':
@@ -330,7 +346,12 @@ class China_Unicom:
                 print('当前任务：' + x['taskname'])
                 #print(cs)
                 if x['totalNum'] >= int(cs['bindvalue']):
-                    print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                    if x['gainscore'] == cs['score']:
+                        print('已完成，获得分数：' + str(x['gainscore']) + '\n')
+                    else:
+                        print('已完成但未领取奖励，准备去领取。。。')
+                        self.exchangescore(x['tasktype'])
+                        print('\n')
                 else:
                     print('未完成，进度：' + str(x['totalNum']) + '/' + str(x['mapList'][0]['bindvalue']) + '\n')                    
                 
@@ -344,7 +365,8 @@ class China_Unicom:
         self.get_activetion_id() #获取获得id
         self.query_way() #查询任务完成情况
         #self.watch_video()        
-        #self.read_novel()        
+        #self.read_novel()  
+             
         self.query_score()       
         self.watch_ad()
         if unicom_lotter:

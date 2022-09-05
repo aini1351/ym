@@ -216,9 +216,9 @@ class China_Unicom:
                 self.main()
             sleep(uniform(2, 8))
 
-    def read_novel(self):
-        self.print_now("正在执行观看150次小说, 此过程较久, 最大时长为150 * 8s = 20min")
-        for i in range(150):
+    def read_novel(self, cishu):
+        self.print_now(f"正在执行观看{cishu}次小说, 此过程较久, 最大时长为{cishu} * 6s = {cishu * 6 / 60}min")
+        for i in range(cishu):
             date = datetime.today().__format__("%Y%m%d%H%M%S")
             chapterAllIndex = randint(100000000, 999999999)
             cntIndex = randint(1000000, 9999999)
@@ -326,7 +326,7 @@ class China_Unicom:
                     print('未完成，已获得分数：' + str(x['gainscore']))
                     print('还可以完成' + str(x['daylimit'] - x['gainnum']) + '次')
                     print('去完成。。。')
-                    self.read_novel()
+                    self.read_novel((x['daylimit'] - x['gainnum']) * 3)
                     print('\n')
             elif x['taskname'] == '抽奖满8次得100幸运值':
                 cs = x['mapList'][0]

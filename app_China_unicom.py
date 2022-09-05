@@ -225,7 +225,7 @@ class China_Unicom:
             url = f"https://10010.woread.com.cn/ng_woread_service/rest/cnt/wordsDetail?catid={randint(100000, 999999)}&pageIndex={randint(10000, 99999)}&cardid={randint(10000, 99999)}&cntindex={cntIndex}&chapterallindex={chapterAllIndex}&chapterseno=3"
             crypt_text = f'{{"chapterAllIndex":{chapterAllIndex},"cntIndex":{cntIndex},"cntTypeFlag":"1","timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
             self.req(url, crypt_text)
-            sleep(uniform(2, 8))
+            sleep(uniform(2, 6))
 
     def query_score(self):
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryUserScore"

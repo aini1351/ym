@@ -264,7 +264,7 @@ def share_to_get_coin(ticket, mobile, msg):
 def main_handler(event, context):
     l = []
     for config in config_list:
-        print(config)
+        #print(config)
         p = threading.Thread(target=telecom_task, args=(config,))
         l.append(p)
         p.start()

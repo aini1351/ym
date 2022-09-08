@@ -5,7 +5,7 @@
 # @Time : 2022/8/10 13:23
 # -------------------------------
 """
-联通app抽奖 入口:app首页下拉 话费派送中
+联通app抽奖 入口:app首页搜索 阅读专区
 1. 脚本仅供学习交流使用, 请在下载后24h内删除
 2. 需要第三方库 pycryptodome 支持 命令行安装 pip3 install pycryptodome或者根据自己环境自行安装..
 
@@ -17,6 +17,7 @@
     推送通知的变量同青龙 只写了tgbot(支持反代api)和pushplus
 """
 import base64
+from random import shuffle
 
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import algorithms
@@ -382,6 +383,8 @@ class China_Unicom:
 if __name__ == "__main__":
     print('共' + str(len(phone_numArr)) + '个账户')
     c = 0
+    shuffle(phone_numArr)
+    print(phone_numArr)
     for i in phone_numArr:
         c = c + 1
         print('\n账户' + str(c) + '：' + str(i) + '\n')

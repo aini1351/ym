@@ -3,6 +3,7 @@ import re
 import time
 import base64
 import requests
+import datetime
 import threading
 import urllib.parse
 import xml.dom.minidom as xmldom
@@ -41,6 +42,7 @@ def telecom_task(config):
     password = config['password']
     msg.append(mobile + " 开始执行任务...")
     print(mobile + " 开始执行任务...")
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     h5_headers = get_h5_headers(mobile)
     # 获取用户中心
     home_info_body = requests.get(url="{}/telecom/getHomeInfoSign".format(host), params={"mobile": mobile}).json()
@@ -52,6 +54,7 @@ def telecom_task(config):
     old_coin = home_info_ret['data']['userInfo']['totalCoin']
 
     # 签到
+    #print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     sign_body = requests.get(url="{}/telecom/getSign".format(host), params={"mobile": mobile}).json()
     sign_ret = requests.post(url="https://wapside.189.cn:9001/jt-sign/api/home/sign", json=sign_body,
                              headers=h5_headers).json()
@@ -63,6 +66,7 @@ def telecom_task(config):
         print(sign_ret['data']['msg'])
 
     # 登录任务
+
     if password != '':
         ticket = get_ticket(mobile, password, msg)
         if ticket != '':
@@ -71,6 +75,8 @@ def telecom_task(config):
             #share_to_get_coin(ticket, mobile, msg)
 
     # 获取所有任务
+    
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     task_info_body = requests.get(url="{}/telecom/getPhoneSign".format(host), params={"mobile": mobile}).json()
     task_ret = requests.post(url="https://wapside.189.cn:9001/jt-sign/paradise/getTask", headers=h5_headers,
                              json=task_info_body).json()
@@ -88,7 +94,9 @@ def telecom_task(config):
                 print(log_msg)
                 msg.append(log_msg)
             time.sleep(3)
+    
     # 获取用户中心
+    #print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     home_info_ret = requests.post(url="https://wapside.189.cn:9001/jt-sign/api/home/homeInfo", json=home_info_body,
                                   headers=h5_headers).json()
     new_coin = home_info_ret['data']['userInfo']['totalCoin']
@@ -98,9 +106,11 @@ def telecom_task(config):
     print("本次领取金豆: " + str(new_coin - old_coin))
 
     # 喂食
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     food(config, msg)
 
     # 签到7天领取话费
+    print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     convert_reward(config, msg)
     msg.append("----------------------------------------------")
     msg_list.extend(msg)
@@ -130,7 +140,8 @@ def convert_reward(config, msg):
                                  headers=get_h5_headers(mobile)).json()
     msg.append("你已连续签到 " + str(activity_ret['totalDay']) + " 天")
     print("你已连续签到 " + str(activity_ret['totalDay']) + " 天")
-    if activity_ret['recordNum'] > 0:
+    #print(activity_ret)
+    if activity_ret['recordNum'] > 0 and (int(datetime.datetime.now().strftime('%M')) > 55 or int(datetime.datetime.now().strftime('%M')) < 10):
         #可以领取
         reward_id = activity_ret['date']['id']
         params = {
@@ -138,11 +149,28 @@ def convert_reward(config, msg):
             "rewardId": reward_id
         }
         reward_body = requests.get(url="{}/telecom/getConvertReward".format(host), params=params).json()
-        reward_ret = requests.post(url="https://wapside.189.cn:9001/jt-sign/reward/convertReward", json=reward_body,
-                                   headers=get_h5_headers(mobile)).json()
-        if reward_ret['code'] == '0':
-            msg.append(reward_ret['msg'])
-            print(reward_ret['msg'])
+        changtime = int(datetime.datetime.now().strftime('%S'))
+        if changtime < 60:
+            sleeptime = 60 - changtime
+            print('当前秒：' + str(changtime) + ' 等待秒：' + str(sleeptime))
+            time.sleep(sleeptime)
+        for i in range(15):
+            print('开始兑换时间：' + datetime.datetime.now().strftime('%S'))
+            reward_ret = requests.post(url="https://wapside.189.cn:9001/jt-sign/reward/convertReward", json=reward_body,
+                headers=get_h5_headers(mobile)).json()
+            #print(params)
+            #print(reward_ret)
+            if reward_ret['code'] == '0':
+                msg.append(reward_ret['msg'])
+                print(reward_ret['msg'])
+                break
+            else:
+                msg.append(reward_ret['msg'])
+                print(reward_ret['msg'])
+                time.sleep(10)
+    else:
+        msg.append('不在兑换时间或无兑换次数')
+        print('不在兑换时间或无兑换次数')
 
 
 def get_h5_headers(mobile):

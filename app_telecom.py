@@ -31,7 +31,7 @@ if peizhi:
         config_list.append({"mobile": val.split('@')[0], "password": val.split('@')[1], "food": True})
 
 #--------------配置区结束------------#
-app_headers = {"User-Agent": "Redmi K40"}
+app_headers = {"User-Agent": "Xiaomi MI 9/9.2.0"}
 msg_list = []
 host = 'http://120.79.66.8:6987'
 
@@ -176,7 +176,7 @@ def convert_reward(config, msg):
 def get_h5_headers(mobile):
     base64_mobile = str(base64.b64encode(mobile[5:11].encode('utf-8')), 'utf-8').strip(r'=+') + "!#!" + str(
         base64.b64encode(mobile[0:5].encode('utf-8')), 'utf-8').strip(r'=+')
-    return {"User-Agent": "CtClient;9.5.1;Android;11;M2012K11AC;" + base64_mobile}
+    return {"User-Agent": "CtClient;9.2.0;Android;10;MI 9;" + base64_mobile}
 
 
 def format_msg():

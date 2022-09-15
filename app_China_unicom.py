@@ -285,12 +285,12 @@ class China_Unicom:
         phone = self.phone_num
         if data["code"] == "0000":
             can_use_red = data["data"]["usableNum"] / 100
-            if can_use_red >= 3:
+            if can_use_red >= 5:
                 self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 可以去兑换了")
                 self.push(f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击必得10元话费大转盘")
             else:
-                self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 不足兑换的最低额度")
-                #self.push(f"账户{phone} \n你当前有话费红包{can_use_red} 不足兑换的最低额度")
+                self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 不足设定的最低额度")
+                #self.push(f"账户{phone} \n你当前有话费红包{can_use_red} 不足设定的最低额度")
 
     def exchangescore(self,gaintype): #领取月度任务奖励
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/exchangeActiveScore"

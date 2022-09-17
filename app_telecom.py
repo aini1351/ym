@@ -24,7 +24,6 @@ config_list = [
 
 peizhi = environ.get('dianxin')
 if peizhi:
-    
     peizhi_arr = peizhi.split("&")
     for i,val in enumerate(peizhi_arr):
         print(val.split('@')[0])
@@ -107,7 +106,11 @@ def telecom_task(config):
 
     # 喂食
     print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    food(config, msg)
+    if new_coin > 2000:
+        food(config, msg)
+    else:
+        print(mobile + ' 金豆数量过少，不予喂食')
+        msg.append(mobile + ' 金豆数量过少，不予喂食')
 
     # 签到7天领取话费
     print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

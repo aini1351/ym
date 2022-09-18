@@ -91,7 +91,7 @@ def telecom_task(config):
             if polymerize_ret['resoultCode'] == 0:
                 log_msg = task_name + polymerize_ret['data']['err']
                 print(log_msg)
-                msg.append(log_msg)
+                #msg.append(log_msg)
             time.sleep(3)
     
     # 获取用户中心
@@ -106,7 +106,7 @@ def telecom_task(config):
 
     # 喂食
     print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    if new_coin > 2000:
+    if new_coin > 1700:
         food(config, msg)
     else:
         print(mobile + ' 金豆数量过少，不予喂食')

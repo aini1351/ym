@@ -168,7 +168,7 @@ class China_Unicom:
             "sign": base64.b64encode(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text)).decode()
         }
         self.headers["Content-Length"] = str(len(str(body)) - 1)
-        #print(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text))
+        #print(base64.b64encode(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text)))
         #print(self.key)
         data = post(url, headers=self.headers, json=body).json()
         return data
@@ -297,8 +297,23 @@ class China_Unicom:
         date = datetime.today().__format__("%Y%m%d%H%M%S")
         crypt_text = f'{{"gaintype":{gaintype},"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
         data = self.req(url, crypt_text) 
-        self.print_now(data)     
-        
+        self.print_now(data) 
+
+    def PrizeList(self): #抽奖转盘情况
+        url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/queryUserPrizeList"
+        date = datetime.today().__format__("%Y%m%d%H%M%S")
+        crypt_text = f'{{"activeIndex":{self.activeIndex},"year":"","month":"","timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
+        data = self.req(url, crypt_text) 
+        #self.print_now(data) 
+        if data['code'] == '0000':
+            data = data['data']
+            self.print_now('当前转盘情况：') 
+            x = 0
+            for i in data:
+                #self.print_now(i)
+                self.print_now(str(i['prizename']) + '：' + str(i['prizecount']) + "/" + str(i['prizeamount']))  
+                x += i['prizecount']
+            self.print_now('总剩余抽奖次数：' + str(x))
 
 
     def query_way(self): #查询任务完成情况
@@ -375,6 +390,7 @@ class China_Unicom:
                 self.lotter()
                 sleep(2)
             self.query_score()
+        self.PrizeList()
         self.query_red()
         
         #exit(0)

@@ -144,7 +144,7 @@ def convert_reward(config, msg):
     msg.append("你已连续签到 " + str(activity_ret['totalDay']) + " 天")
     print("你已连续签到 " + str(activity_ret['totalDay']) + " 天")
     #print(activity_ret)
-    if activity_ret['recordNum'] > 0 and (int(datetime.datetime.now().strftime('%M')) > 55 or int(datetime.datetime.now().strftime('%M')) < 10):
+    if activity_ret['recordNum'] > 0 and (int(datetime.datetime.now().strftime('%M')) > 55 or int(datetime.datetime.now().strftime('%M')) < 10) and int(datetime.datetime.now().strftime('%H')) > 10:
         #可以领取
         reward_id = activity_ret['date']['id']
         params = {
@@ -302,7 +302,9 @@ def main_handler(event, context):
     for i in l:
         i.join()
     content = format_msg()
-    send('电信签到任务', content)
+    time.sleep(15)
+    if int(datetime.datetime.now().strftime('%H')) > 11:
+        send('电信签到任务', content)
     print(content)
     return content
 

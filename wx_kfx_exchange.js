@@ -1,5 +1,5 @@
 /*
-22 6 * * * 卡夫享兑换
+0-30/3 9 * * * 卡夫享兑换
 微信小程序入口 https://fscrm.kraftheinz.net.cn/?from=p0KkGEBMKTFVD/N6plb4og==
 */
 const $ = new Env("卡夫享兑换");

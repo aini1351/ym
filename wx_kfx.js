@@ -1,5 +1,5 @@
 /*
-13 8,17,21 * * * 卡夫享
+43 8,17,21 * * * 卡夫享
 微信小程序入口 https://fscrm.kraftheinz.net.cn/?from=p0KkGEBMKTFVD/N6plb4og==
 每日签到
 自动兑换2e卡，需使用 wx_kfx_exchange.js 脚本
@@ -50,8 +50,8 @@ member_idArr = [
             await getUserinfo()
             await getScoreOrder()
             await $.wait(1000)
-            if (time.getHours() === 8 || time.getHours() === 17) await dailySign()
-            await $.wait(1500) 
+            await dailySign()
+            await $.wait(1000) 
             if ($.index === 1) await getCookbookIndex()
             await $.wait(1000)
                      

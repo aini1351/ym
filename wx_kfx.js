@@ -1,6 +1,8 @@
 /*
-22 6 * * * 卡夫享
+13 8,17,21 * * * 卡夫享
 微信小程序入口 https://fscrm.kraftheinz.net.cn/?from=p0KkGEBMKTFVD/N6plb4og==
+每日签到
+自动兑换2e卡，需使用 wx_kfx_exchange.js 脚本
 */
 const $ = new Env("卡夫享");
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -16,12 +18,14 @@ if (process.env.kfxtoken) {
   }
 }
 let time = new Date()
-//console.log(time.valueOf())
-if (process.env.clua) {
-    UA = process.env.clua
-}
-//member_idArr
-replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
+
+member_idArr = [
+  567173, 567163,
+  572416, 567304,
+  637738, 637744,
+  577227
+]
+
 !(async () => {
     if (!kfxtokensArr[0]) {
         $.msg($.name, '请先添加cookie');
@@ -41,9 +45,7 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
             isrun = true
             console.log(`\n******开始【账号${$.index}】*********\n`);
             cookbook_id = random(200,250)
-            
-            //await wx_sdk()
-            //await traceEvent()
+
             //
             await getUserinfo()
             await getScoreOrder()
@@ -55,7 +57,7 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
                      
         }
     }
-    /*console.log('开始互助')
+    console.log('开始互助')
     for (let i = 0; i < kfxtokensArr.length; i++) {
         cookie = kfxtokensArr[i]
         $.index = i + 1
@@ -65,19 +67,11 @@ replycount = (process.env.clreplycount) ? process.env.clreplycount : 10
         for (let j = 0; j < member_idArr.length; j++) {
             console.log(`用户${$.index}去助力${member_idArr[j]}`,x)
             
-            var wx = random(10,99)
-            await help(member_idArr[j], x)
-            await $.wait(1000)
-            await wx_sdk(member_idArr[j],x)
-            await $.wait(1000)
-            await js(member_idArr[j],x,wx)
-            await $.wait(1000)
-            await sdk(member_idArr[j],x,wx)
 
             await $.wait(1000)
             await recordScoreShare()
         }
-    }*/
+    }
     if (message !== '' && (ismessage || time.getHours()  == 21)) {
         
         if ($.isNode()) {
@@ -119,7 +113,7 @@ async function getUserinfo() {
                         console.log(`用户${$.index}:${data.data.nickname}已签到次数${data.data.signTimes}`)                 
                         console.log(`当前积分：${data.data.memberInfo.score}`)
                         if (data.data.memberInfo.score>20) await exchange()
-                        member_idArr.push(data.data.member_id)
+                        if (member_idArr.indexOf(data.data.member_id) == -1) member_idArr.push(data.data.member_id)
                     } else {
                         console.log(data.msg)
                     }
@@ -132,114 +126,8 @@ async function getUserinfo() {
         })
     })
 }
-async function wx_sdk(invite_id,cookbook_id) {
-    const options = {
-        url: `https://fscrm.kraftheinz.net.cn/wx_sdk/index.php?type=signature&url=https%3A%2F%2Ffscrm.kraftheinz.net.cn%2F%3Finvite_id%3D${invite_id}%26cookbook_id%3D${cookbook_id}`,
-        headers: {
-            'Host': 'fscrm.kraftheinz.net.cn',
-            'Connection': 'keep-alive',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
 
-            'Accept': '*/*',
-            'X-Requested-With': 'com.tencent.mm',
-            'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            
-        },
-    };    
-    return new Promise(resolve => {
-        $.get(options, (err, resp, data) => {
-            try {
-                if (err) {
-                    $.logErr(err)
-                } else {
-                    if (data) {
-                    //console.log(data)                        
-                      
-                    }
-                }
-            } catch (e) {
-                $.logErr(e)
-            } finally {
-                resolve();
-            }
-        })
-    })
-}
 
-async function sdk(invite_id,cookbook_id,wx) {
-    const options = {
-        url: `https://open.weixin.qq.com/sdk/report?v=1&o=0&s=2&c=8.0.16&a=wx65da983ae179e${wx}b&n=wifi&i=-${time.getTime()}&p=309&u=https%3A%2F%2Ffscrm.kraftheinz.net.cn%2F%3Finvite_id%3D${invite_id}%26cookbook_id%3D${cookbook_id}%23%2F`,
-        headers: {
-            'Host': 'open.weixin.qq.com',
-            'Connection': 'keep-alive',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-
-            'Accept': 'image/avif,image/webp,image/wxpic,image/tpg,image/apng,image/*,*/*;q=0.8',
-            'X-Requested-With': 'com.tencent.mm',
-            'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            
-        },
-    };   
-    //console.log(options.url) 
-    return new Promise(resolve => {
-        $.get(options, (err, resp, data) => {
-            try {
-                if (err) {
-                    $.logErr(err)
-                } else {
-                    if (data) {
-                    //console.log(data)                        
-                      
-                    }
-                }
-            } catch (e) {
-                $.logErr(e)
-            } finally {
-                resolve();
-            }
-        })
-    })
-}
-
-async function js(invite_id,cookbook_id,wx) {
-    const options = {
-        url: `https://fscrm.kraftheinz.net.cn/js/2.1280d239c0eb0bb76c93.js`,
-        headers: {
-            'Host': 'fscrm.kraftheinz.net.cn',
-            'Connection': 'keep-alive',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 11; M2012K11AC Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/3185 MMWEBSDK/20211001 Mobile Safari/537.36 MMWEBID/4883 MicroMessenger/8.0.16.2040(0x2800105F) Process/toolsmp WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
-
-            'Accept': '*/*',
-            'X-Requested-With': 'com.tencent.mm',
-            'Referer': `https://fscrm.kraftheinz.net.cn/?invite_id=${invite_id}&cookbook_id=${cookbook_id}`,
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
-            
-        },
-    };    
-    return new Promise(resolve => {
-        $.get(options, (err, resp, data) => {
-            try {
-                if (err) {
-                    $.logErr(err)
-                } else {
-                    if (data) {
-                    //console.log(data)                        
-                      
-                    }
-                }
-            } catch (e) {
-                $.logErr(e)
-            } finally {
-                resolve();
-            }
-        })
-    })
-}
 
 async function help(invite_id,cookbook_id) {
 
@@ -361,14 +249,14 @@ async function recordScoreShare(invite_id,cookbook_id) {
         body: `cookbook_id=${cookbook_id}&invite_id=${invite_id}`,
     };    
     return new Promise(resolve => {
-        $.post(posturl('recordScoreShare'), (err, resp, data) => {
+        $.post(options, (err, resp, data) => {
             try {
                 if (err) {
                     $.logErr(err)
                 } else {
                     if (data) {
-                        data = JSON.parse(data)
-                    console.log(data.msg)                        
+                        //data = JSON.parse(data)
+                        console.log(data)                        
                       
                     }
                 }
@@ -481,10 +369,6 @@ function posturl(url,body) {
     return options
 
 }
-
-
-
-
 
 
 // prettier-ignore

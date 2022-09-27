@@ -314,6 +314,7 @@ class China_Unicom:
                 self.print_now(str(i['prizename']) + '：' + str(i['prizecount']) + "/" + str(i['prizeamount']))  
                 x += i['prizecount']
             self.print_now('总剩余抽奖次数：' + str(x))
+            self.left_lottery = x
 
 
     def query_way(self): #查询任务完成情况
@@ -385,7 +386,8 @@ class China_Unicom:
              
         self.query_score()       
         self.watch_ad()
-        if unicom_lotter:
+        self.PrizeList()
+        if unicom_lotter and self.left_lottery > 0:
             for i in range(self.lotter_num):
                 self.lotter()
                 sleep(2)

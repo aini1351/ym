@@ -1,9 +1,14 @@
-#河南青年大学习
+'''
+河南青年大学习
 
+new Env('江苏青年大学习');
+'''
 import json
 import requests
 from notify import send
 from os import environ
+
+
 # 以下信息需要自己手动抓取
 cookie = environ.get('qndxx_henan')
 if (len(cookie) == 0):

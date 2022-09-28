@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 """
 @author:yuzai
-@file:Qndxx.py
+@file:Qndxx.py   https://github.com/yuzaii/JsQndxx_Python
 @time:2022/09/17
 """
 import json

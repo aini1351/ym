@@ -1,7 +1,7 @@
 '''
 河南青年大学习
 
-new Env('江苏青年大学习');
+new Env('河南青年大学习');
 '''
 import json
 import requests

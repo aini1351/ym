@@ -25,7 +25,7 @@ get_new_study_headers = {
     "Referer": "http://hnqndaxuexi.dahejs.cn/study/studyList",
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Cookie": cookie
+
 }
 get_new_study_url = "http://hnqndaxuexi.dahejs.cn/stw/news/list?&pageNumber=1&pageSize=10"
 response = requests.get(url=get_new_study_url, headers=get_new_study_headers)

@@ -4,6 +4,7 @@
 @author:yuzai
 @file:Qndxx.py   https://github.com/yuzaii/JsQndxx_Python
 @time:2022/09/17
+new Env('江苏青年大学习');
 """
 import json
 import re
@@ -11,6 +12,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from os import environ
+from notify import send
 
 
 laravel_session = environ.get('laravel_session')
@@ -85,6 +87,9 @@ class Qndxx:
         # print(login_res.text)
         if '抱歉，出错了' in login_res.text:
             print("laravel_session错误")
+            
+            send('江苏青年大学习', 'laravel_session出错，可能过期，请重新抓取')
+            exit(0)
             raise Exception("laravel_session错误")
         # 正则匹配token和lesson_id
         token = re.findall(r'var token ?= ?"(.*?)"', login_res.text)  # 获取js里的token

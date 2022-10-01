@@ -87,8 +87,9 @@ async def main(api_id, api_hash, channel_id):
             if "已经签到过" in event.message.text or "距离下次可签到" in event.message.text or '当前积分' in event.message.text:
                 # 结束循环
                 print_now('已签到，终止')
-                msg.append('已签到:')
+                
                 if '积分' in event.message.text or '总分' in event.message.text:
+                    msg.append('已签到:')
                     print_now(event.message.text)
                     msg.append(event.message.text)
                     await client.send_read_acknowledge(channel_id) #退出运行

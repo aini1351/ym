@@ -12,7 +12,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from os import environ
-from notify import send
+from sendNotify import send
 
 
 laravel_session = environ.get('laravel_session')

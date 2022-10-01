@@ -8,7 +8,7 @@ import threading
 import urllib.parse
 import xml.dom.minidom as xmldom
 
-from notify import send
+from sendNotify import send
 from os import environ, system
 
 #--------------以下为配置区需自行填写--------------#

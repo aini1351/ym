@@ -1,5 +1,5 @@
 '''
-new Evn('tgbot签到')
+new Env('tgbot签到')
 https://apitruecaptcha.org/api.html
 '''
 import asyncio

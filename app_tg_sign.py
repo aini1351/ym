@@ -173,9 +173,9 @@ async def main(api_id, api_hash, channel_id):
                 print_now('不知道咋回事，防止意外，退出')
                 msg.append('出现意外，未签到')
                 #time.sleep(sj(5,10))
-                await client.send_message(event.message.chat_id, RETURE_MENU)
+                await client.send_read_acknowledge(channel_id)	#将机器人回应设为已读
                 await client.disconnect()
-            await client.send_read_acknowledge(channel_id)	#将机器人回应设为已读
+            #await client.send_read_acknowledge(channel_id)	#将机器人回应设为已读
             #await client.disconnect()
         await client.start()
         await client.run_until_disconnected()    
@@ -188,7 +188,7 @@ if __name__ == "__main__":
         zh += 1 
         print_now('\n\n开始执行账号' + str(zh) + '：' + str(i) + '：' '\n')
         msg.append('\n账号' + str(zh) + '：' + str(i) + '：' '\n')
-        yc = sj(100,1000)
+        yc = sj(30,500)
         print_now('随机延迟' + str(yc) + '秒后开始执行')
         time.sleep(yc)
         for j in CHANNEL_ID:

@@ -5,7 +5,7 @@ new Env('河南青年大学习');
 '''
 import json
 import requests
-from notify import send
+from sendNotify import send
 from os import environ
 
 

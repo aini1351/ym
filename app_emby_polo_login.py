@@ -112,8 +112,8 @@ class emby_polo:
 if __name__  == '__main__':
     msg = []
     for i in accountArr:
-        print_now('\n********开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + '********\n')
-        msg.append('\n****账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + '****\n')
+        print_now('\n******** 开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ********\n')
+        msg.append('\n****** 账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ******\n')
         emby_polo(i.split('@')[0], i.split('@')[1], url).main()
         sj = sjs(100,500)
         print_now('随机等待' + str(sj) + '秒')

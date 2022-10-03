@@ -206,8 +206,8 @@ class emby_login:
 if __name__  == '__main__':
     msg = []
     url_wrong = 0
+    print_now('共' + str(len(accountsArr)) + '种emby')
     for accounts in accountsArr:
-        print_now('共' + str(len(accountsArr)) + '种emby')
         print_now('\n\n************开始 Emby：' + accounts['type'] + '************\n\n')
         msg.append('\n\n************ Emby：' + accounts['type'] + '************\n\n')
         url = accounts['url']

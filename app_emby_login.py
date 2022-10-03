@@ -1,5 +1,5 @@
 '''
-new Env('Polo登录')
+new Env('Emby登录')
 '''
 import time
 import random
@@ -16,16 +16,24 @@ def print_now(content):
     stdout.flush()
 
 
-account = environ.get('emby_polo') if environ.get('emby_polo') else ''
-url = environ.get('emby_polo_url') if environ.get('emby_polo_url') else ''
-if account == '':
-    print_now('未填写账号密码，退出')
+accounts = environ.get('emby_info') if environ.get('emby_info') else ''
+urls = environ.get('emby_url') if environ.get('emby_url') else ''
+if accounts == '' or urls == '':
+    print_now('未填写账号密码或url，退出')
     exit(0)
-accountArr = account.split('&')
+if len(accounts.split('\n')) != len(urls.split('\n')):
+    print('账号类型数量与urls数量不匹配，退出')
+    exit(0)
+#accountArr = account.split('&')
+accountsArr = []
+for x,y in enumerate(accounts.split('\n')):
+    accountsArr.append({'account_info': y, 'url': urls.split('\n')[x].split('@')[0], 'type': urls.split('\n')[x].split('@')[1]})
 
+'''
 if url == '':
     print_now('未填写url，使用脚本内置')
     url = 'https://aaa.ax'
+'''
 
 def encrypt_md5(s):
     # 创建md5对象
@@ -40,7 +48,7 @@ def sjs(a, b):
 
 
 
-class emby_polo:
+class emby_login:
     
     def __init__(self, usr, pwd, url):
         self.url = url
@@ -191,23 +199,30 @@ class emby_polo:
             time.sleep(sjs(5,20))
             self.view()
             if self.run:
-                time.sleep(sjs(5,20))
+                time.sleep(sjs(5,30))
                 self.lastest()
 
             
 if __name__  == '__main__':
     msg = []
     url_wrong = 0
-    for i in accountArr:
-        print_now('\n********开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + '********\n')
-        msg.append('\n********账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + '********\n')
-        emby_polo(i.split('@')[0], i.split('@')[1], url).main()
-        if url_wrong:
-            print_now('url访问出错，后续账号不再运行')
-            msg.append('url访问出错，后续账号不再运行')
-            break
-        sj = sjs(100,1000)
-        print_now('随机等待' + str(sj) + '秒')
-        time.sleep(sj)
-    msg.append('\n当前访问url：' + url)
-    send('Polo登录', '\n'.join(msg))
+    for accounts in accountsArr:
+        print_now('共' + str(len(accountsArr)) + '种emby')
+        print_now('\n\n************开始 Emby：' + accounts['type'] + '************\n\n')
+        msg.append('\n\n************ Emby：' + accounts['type'] + '************\n\n')
+        url = accounts['url']
+        accountArr = accounts['account_info'].split('&')
+        for i in accountArr:
+            print_now('****开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + '****\n')
+            msg.append('****账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + '****\n')
+            emby_login(i.split('@')[0], i.split('@')[1], url).main()
+            if url_wrong:
+                print_now(f'url访问出错, 后续账号不再运行')
+                msg.append('url访问出错, 后续账号不再运行')
+                break
+            sj = sjs(100,1000)
+            print_now('随机等待' + str(sj) + '秒')
+            #time.sleep(sj)
+            msg.append('\n当前访问url：' + url)
+    
+    send('Emby登录', '\n'.join(msg))

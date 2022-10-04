@@ -1,5 +1,5 @@
 '''
-new Env('tgbot签到')
+new Env('TGBot 签到')
 https://apitruecaptcha.org/api.html
 '''
 import asyncio
@@ -24,9 +24,12 @@ API_ID1 = environ.get('api_id')	if environ.get('api_id') else '' #输入api_id�
 API_HASH1 = environ.get('api_hash')	if environ.get('api_hash') else ''   #输入api_hash，一个账号一项
 captcha_username = environ.get('captcha_username') if environ.get('captcha_username') else ''
 captcha_pwd = environ.get('captcha_pwd') if environ.get('captcha_pwd') else ''
-
+CHANNEL_ID1 = environ.get('channel_id') if environ.get('channel_id') else ''
 #session_name = API_ID[:]
-CHANNEL_ID = ['@qweybgbot', '@EmbyPublicBot','@blueseamusic_bot', '@Orange_Emby_Bot','@EmbyMistyBot']  #, 
+if CHANNEL_ID1:
+    CHANNEL_ID = CHANNEL_ID1.split('&')
+else:
+    CHANNEL_ID = ['@qweybgbot']  #, 
 if len(API_HASH1) == 0 or len(API_ID1) == 0:
     print('未填api_id或api_hash，退出')
     exit(0)
@@ -495,8 +498,8 @@ if __name__ == "__main__":
         zh += 1 
         print_now('\n\n************开始执行账号' + str(zh) + '：' + str(i) + '：' '************\n')
         msg.append('\n*********账号' + str(zh) + '：' + str(i) + '：' '*********\n')
-        yc = sj(30,100)
-        print_now('随机延迟' + str(yc) + '秒后开始执行')
+        yc = sj(3,10)
+        #print_now('随机延迟' + str(yc) + '秒后开始执行')
         #time.sleep(yc)
         for j in CHANNEL_ID:
             if i == API_ID[0] and j == CHANNEL_ID[1]:

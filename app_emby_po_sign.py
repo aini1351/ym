@@ -517,7 +517,7 @@ if __name__ == "__main__":
         #time.sleep(yc)
 
         cishu = 0
-        if i == '9421323':
+        if i == '9421323' or i == '4524860':
 
             asyncio.run(main2(i, API_HASH[API_ID.index(i)], 'https://t.me/PronembyTGBot2_bot')) #签到
 

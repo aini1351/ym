@@ -222,8 +222,8 @@ async def main2(api_id, api_hash, channel_id):
             msg.append('当前账号无反应，可能被禁用或' + channel_id + '卡住了')
             await client.disconnect()
         '''
-        @client.on(events.NewMessage(chats=channel_id))
-
+        @client.on(events.NewMessage(chats=channel_id))#
+        @client.on(events.MessageEdited(chats=channel_id))
 
 
         async def my_event_handler(event):
@@ -249,7 +249,7 @@ async def main2(api_id, api_hash, channel_id):
             # 区分消息类型
             if "已经签到过" in event.message.text or "距离下次可签到" in event.message.text or '当前积分' in event.message.text:
                 # 结束运行
-                if '积分' in event.message.text or '总分' in event.message.text:
+                if '积分' in event.message.text or '总分' in event.message.text or '余额总计' in event.message.text:
                     print_now('已签到，终止')
                     msg.append('已签到:')
                     print_now(event.message.text)
@@ -292,6 +292,7 @@ async def main2(api_id, api_hash, channel_id):
                 #print_now( event.message.reply_markup.rows[0])
                 if '身份:注册会员' in event.message.text:  #orange
                     await event.message.click(1)  #签到按钮所在位置
+                    '''
                     time.sleep(sj(5,7)) 
                     
                     async for msgs in client.iter_messages(channel_id, 1):  #获取最新一条消息
@@ -301,6 +302,7 @@ async def main2(api_id, api_hash, channel_id):
                             await client.send_read_acknowledge(channel_id)  
                             #await asyncio.sleep(0)
                             await client.disconnect()
+                            '''
                         
          
 

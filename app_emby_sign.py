@@ -70,7 +70,7 @@ async def captcha_solver(dealcap):
         #return base64data
     except:
         print_now('验证码识别平台无回应，随便返回一个结果')
-        return '67341'
+        return str(sj(10000,99999))
 
 
 

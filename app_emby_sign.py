@@ -70,7 +70,7 @@ async def captcha_solver(dealcap):
         #return base64data
     except:
         print_now('验证码识别平台无回应，随便返回一个结果')
-        return sj(10000,99999)
+        return '67341'
 
 
 
@@ -457,6 +457,13 @@ async def main3(api_id, api_hash, channel_id):
             elif "验证码错误" in event.message.text or "选择您要使用的功能" in event.message.text: 
                 print_now('重新开始。。。')
                 await client.send_message(channel_id, MSG1)
+            elif '签到成功' in event.message.text or '你回答正确' in event.message.text:
+                msg.append(event.message.text)
+                print_now(event.message.text)
+                is_signed = True
+                await client.send_read_acknowledge(channel_id)
+                #await asyncio.sleep(0)
+                await client.disconnect()
             elif "请选择功能" in event.message.text: 
                 print_now(is_signed)
                 if is_signed:
@@ -467,13 +474,7 @@ async def main3(api_id, api_hash, channel_id):
                 await client.send_read_acknowledge(channel_id)
 
             # 是否成功签到
-            elif '签到成功' in event.message.text or '你回答正确' in event.message.text:
-                msg.append(event.message.text)
-                print_now(event.message.text)
-                is_signed = True
-                await client.send_read_acknowledge(channel_id)
-                #await asyncio.sleep(0)
-                await client.disconnect()
+
 
             else :
                 print_now('不知道咋回事，防止意外，退出')

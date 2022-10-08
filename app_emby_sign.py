@@ -92,7 +92,7 @@ async def main1(api_id, api_hash, channel_id):
         msg.append('\n准备去签到:' + channel_id)
         await client.send_message(channel_id, MSG)
         @client.on(events.NewMessage(chats=channel_id))
-
+        @client.on(events.MessageEdited(chats=channel_id))
         async def my_event_handler(event):
             global cishu
             cishu += 1
@@ -150,13 +150,14 @@ async def main1(api_id, api_hash, channel_id):
                         if int(button.text) == res:
                             print_now('点击提交正确答案按钮')
                             #await event.message.click(button)
-                            time.sleep(sj(2,7))
+                            time.sleep(sj(1,3))
                             await event.message.click(buttons.index(button))
-                            
+                    '''   
                     print_now('提交过正确答案，不清楚是否成功，终止')
                     msg.append('提交过正确答案，不清楚是否成功')
                     await client.send_read_acknowledge(channel_id)
                     await client.disconnect()
+                    '''
                     
                 else:
                     print_now('没匹配到算法，重新获取')
@@ -191,8 +192,9 @@ async def main1(api_id, api_hash, channel_id):
                 await client.send_read_acknowledge(channel_id)
                 await client.disconnect()
             else :
+                print_now(event.message.text)
                 print_now('不知道咋回事，防止意外，退出')
-                msg.append('出现意外，未签到')
+                msg.append(event.message.text)
                 #time.sleep(sj(5,10))
                 await client.send_read_acknowledge(channel_id)	#将机器人回应设为已读
                 await client.disconnect()
@@ -226,6 +228,7 @@ async def main2(api_id, api_hash, channel_id):
             await client.disconnect()
         '''
         @client.on(events.NewMessage(chats=channel_id))
+        @client.on(events.MessageEdited(chats=channel_id))
 
 
 
@@ -393,7 +396,7 @@ async def main3(api_id, api_hash, channel_id):
         time.sleep(sj(5,10))
 
         @client.on(events.NewMessage(chats=channel_id))
-        
+        @client.on(events.MessageEdited(chats=channel_id))
         async def my_event_handler(event):
             global cishu
             global is_signed
@@ -401,7 +404,7 @@ async def main3(api_id, api_hash, channel_id):
             print_now('当前第' + str(cishu) + '次尝试')
             print_now(event.message.text)
             time.sleep(sj(5,8))
-            
+            await client.send_read_acknowledge(channel_id)
             #尝试八次，失败退出
             if cishu > 30:
                 print_now('尝试次数已达到10次仍未成功，退出')
@@ -504,7 +507,7 @@ if __name__ == "__main__":
         #time.sleep(yc)
         for j in CHANNEL_ID:
             if i == API_ID[0] and j == CHANNEL_ID[1]:
-                continue
+                #continue
                 a = 1
             cishu = 0     #每个账号尝试签到次数
             is_signed = False

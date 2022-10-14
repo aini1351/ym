@@ -3,6 +3,7 @@ new Env('Emby 登录')
 '''
 import time
 import random
+import requests
 from requests import post, get
 from sendNotify import send
 from os import environ
@@ -10,6 +11,8 @@ from hashlib import md5
 from sys import stdout, exit
 #from datetime import datetime
 
+import warnings 
+warnings.filterwarnings("ignore") #关闭警告
 
 def print_now(content):
     print(content)
@@ -81,9 +84,10 @@ class emby_login:
         headers = self.headers
         #print(headers, data, url)
         try:
-            req = post(url, data = data, headers = headers, timeout=30)
+            req = post(url, data = data, headers = headers, timeout=30, verify=False)#不验证ssl证书
         except:
             print(url,data,headers)
+            print(req)
             print_now('url访问出错')
             msg.append('url访问出错了!!!')
             url_wrong = 1
@@ -127,7 +131,7 @@ class emby_login:
         }
         #print(url,headers)
         try:
-            req = get(url,headers = headers, timeout=30)
+            req = get(url,headers = headers, timeout=30, verify=False)
         except:
 
             print_now('url访问出错')
@@ -170,7 +174,7 @@ class emby_login:
         }
         #print(url,headers)
         try:
-            req = get(url, headers = headers, timeout=30)
+            req = get(url, headers = headers, timeout=30, verify=False)
         except:
 
             print_now('url访问出错')

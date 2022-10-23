@@ -477,7 +477,7 @@ async def main3(api_id, api_hash, channel_id):
                 await client.send_read_acknowledge(channel_id)
 
             # 是否成功签到
-
+                '''
 
             else :
                 print_now('不知道咋回事，防止意外，退出')
@@ -485,7 +485,8 @@ async def main3(api_id, api_hash, channel_id):
                 #time.sleep(sj(5,10))
                 await client.send_read_acknowledge(channel_id)	#将机器人回应设为已读
                 #await asyncio.sleep(0)
-                await client.disconnect()           
+                await client.disconnect()      
+                '''     
         await client.start()
 
         await client.run_until_disconnected()
@@ -511,7 +512,7 @@ if __name__ == "__main__":
                 a = 1
             cishu = 0     #每个账号尝试签到次数
             is_signed = False
-            if j == '@Orange_Emby_Bot':  
+            if j == '@Orange_Emby_Bot' or j == '@peach_emby_bot':  
                 asyncio.run(main2(i, API_HASH[API_ID.index(i)], j))
             elif j == '@EmbyMistyBot':
                 asyncio.run(main3(i, API_HASH[API_ID.index(i)], j))

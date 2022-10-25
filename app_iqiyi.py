@@ -29,6 +29,7 @@ from string import digits, ascii_lowercase, ascii_uppercase
 from sys import exit, stdout
 from os import environ, system
 from re import findall
+from sendNotify import send
 
 try:
     from requests import Session, get, post
@@ -40,24 +41,39 @@ except:
     system("pip3 install requests")
     print("安装完成 脚本退出 请重新执行")
     exit(0)
-iqy_ck = environ.get("iqy_ck") if environ.get("iqy_ck") else cookie
+iqy_cks = environ.get("iqy_ck") if environ.get("iqy_ck") else cookie
 get_iqiyi_dfp = environ.get("get_iqiyi_dfp") if environ.get("get_iqiyi_dfp") else False
 pushplus_token = environ.get("PUSH_PLUS_TOKEN") if environ.get("PUSH_PLUS_TOKEN") else ""
 tgbot_token = environ.get("TG_BOT_TOKEN") if environ.get("TG_BOT_TOKEN") else ""
 tg_userId = environ.get("TG_USER_ID") if environ.get("TG_USER_ID") else ""
 tg_push_api = environ.get("TG_API_HOST") if environ.get("TG_API_HOST") else ""
-if iqy_ck == "":
+if iqy_cks == "":
     print("未填写cookie 青龙可在环境变量设置 iqy_ck 或者在本脚本文件上方将获取到的cookie填入cookie中")
     exit(0)
-if "__dfp" in iqy_ck:
+'''
+if "__dfp" in iqy_cks:
     iqiyi_dfp = findall(r"__dfp=(.*?)(;|$)", iqy_ck)[0][0]
     iqiyi_dfp = iqiyi_dfp.split("@")[0]
-if "P00001" in iqy_ck:
-    iqy_ck = findall(r"P00001=(.*?)(;|$)", iqy_ck)[0][0]
+'''
+if "P00001" in iqy_cks:
+    iqy_cksArr = iqy_cks.split('\n')
+    iqy_ckArr = []
+    iqiyi_dfpArr = []
+    for i in iqy_cksArr:
+        if len(i) < 10:
+            continue
+        iqy_ckArr.append(findall(r"P00001=(.*?)(;|$)", i)[0][0])
+        if "__dfp" in i:
+            iqiyi_dfps = findall(r"__dfp=(.*?)(;|$)", i)[0][0]
+            iqiyi_dfpArr.append(iqiyi_dfp.split("@")[0])
+        else:
+            iqiyi_dfpArr.append('a18af56a9b6a224272ab8ed00d1a587078cd5c8ab119b2a4a689d5a22f06bcbd8b')
+
+'''
 if iqiyi_dfp == "":
     iqiyi_dfp = environ.get("iqiyi_dfp") if environ.get(
         "iqiyi_dfp") else "a18af56a9b6a224272ab8ed00d1a587078cd5c8ab119b2a4a689d5a22f06bcbd8b"
-
+'''
 
 class Iqiyi:
     def __init__(self, ck, dfp):
@@ -136,7 +152,7 @@ class Iqiyi:
             self.print_now('推送失败')
 
     def tgpush(self, content):
-        url = f"https://api.telegram.org/bot{tgbot_token}/sendMessage"
+        url = f"https://tg.cffd.ml/bot{tgbot_token}/sendMessage"
         if tg_push_api != "":
             url = f"https://{tg_push_api}/bot{tgbot_token}/sendMessage"
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -186,17 +202,23 @@ class Iqiyi:
         url = f"https://tc.vip.iqiyi.com/growthAgency/v2/growth-aggregation?messageId={self.qyid}&platform=97ae2982356f69d8&P00001={self.ck}&responseNodes=duration%2Cgrowth%2Cupgrade%2CviewTime%2CgrowthAnnualCard&_={self.timestamp()}"
         data = self.req(url)
         msg = data['data']['growth']
+        print(data['data'])
         try:
             self.user_info = f"查询成功: 到期时间{msg['deadline']}\t当前等级为{msg['level']}\n\t今日获得成长值{msg['todayGrowthValue']}\t总成长值{msg['growthvalue']}\t距离下一等级还差{msg['distance']}成长值"
             self.print_now(self.user_info)
+            self.msg += self.user_info 
         except:
             self.user_info = f"查询失败,未获取到用户信息"
+            self.msg += self.user_info 
 
     """获取用户id"""
 
     def getUid(self):
         url = f'https://passport.iqiyi.com/apis/user/info.action?authcookie={self.ck}&fields=userinfo%2Cqiyi_vip&timeout=15000'
         data = self.req(url)
+        self.usr = data['data']['userinfo']['user_name']
+        print('\n账号：', self.usr, '\n')
+        self.msg += '\n\n账号：' + self.usr + '\n\n'
         if data.get("code") == 'A00000':
             self.uid = data['data']['userinfo']['pru']
         else:
@@ -346,12 +368,18 @@ class Iqiyi:
         if int(self.sleep_await) == 1:
             sleep(180)
         self.get_userinfo()
+        return self.msg
+        '''
         if pushplus_token != "":
             self.pushplus("爱奇艺每日任务签到", self.user_info)
         if tgbot_token != "" and tg_userId != "":
-            self.tgpush(self.user_info)
+            self.tgpush(self.user_info)'''
 
 
 if __name__ == '__main__':
-    iqiyi = Iqiyi(iqy_ck, iqiyi_dfp)
-    iqiyi.main()
+    msg = ''#f'共{len(iqy_ckArr)}个账号'
+    print(f'共{len(iqy_ckArr)}个账号')
+    for i in iqy_ckArr:
+        iqiyi = Iqiyi(i, iqiyi_dfpArr[iqy_ckArr.index(i)])
+        msg += iqiyi.main()
+    send('爱奇艺每日任务签到', msg)

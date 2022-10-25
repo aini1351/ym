@@ -22,6 +22,7 @@ from string import digits, ascii_lowercase, ascii_uppercase
 from sys import exit, stdout
 from os import environ, system
 from re import findall
+from sendNotify import send
 
 try:
     from requests import Session, get, post
@@ -33,19 +34,35 @@ except:
     system("pip3 install requests")
     print("安装完成 脚本退出 请重新执行")
     exit(0)
-iqy_ck = environ.get("iqy_ck") if environ.get("iqy_ck") else cookie
+iqy_cks = environ.get("iqy_ck") if environ.get("iqy_ck") else cookie
 pushplus_token = environ.get("PUSH_PLUS_TOKEN") if environ.get("PUSH_PLUS_TOKEN") else ""
 tgbot_token = environ.get("TG_BOT_TOKEN") if environ.get("TG_BOT_TOKEN") else ""
 tg_userId = environ.get("TG_USER_ID") if environ.get("TG_USER_ID") else ""
 tg_push_api = environ.get("TG_API_HOST") if environ.get("TG_API_HOST") else ""
-if iqy_ck == "":
+
+if iqy_cks == "":
     print("未填写cookie 青龙可在环境变量设置 iqy_ck 或者在本脚本文件上方将获取到的cookie填入cookie中")
     exit(0)
-if "P00001" in iqy_ck:
-    iqy_ck = findall(r"P00001=(.*?)(;|$)", iqy_ck)[0][0]
+if "P00001" in iqy_cks:
+    iqy_ckArr = []
+    iqy_cksArr = iqy_cks.split('\n')
+    for i in iqy_cksArr:
 
+        iqy_ckArr.append(findall(r"P00001=(.*?)(;|$)", i)[0][0])
+
+def tgpush(content):
+    url = f"https://tg.cffd.ml/bot{tgbot_token}/sendMessage"
+    if tg_push_api != "":
+        url = f"https://{tg_push_api}/bot{tgbot_token}/sendMessage"
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    data = {'chat_id': str(tg_userId), 'text': content, 'disable_web_page_preview': 'true'}
+    try:
+        post(url, headers=headers, data=data, timeout=10)
+    except:
+        self.print_now('推送失败')
 
 class Iqiyi:
+    
     def __init__(self, ck):
         self.ck = ck
         self.session = Session()
@@ -55,6 +72,7 @@ class Iqiyi:
             "Cookie": f"P00001={self.ck}",
             "Content-Type": "application/json"
         }
+        
         self.msg = ""
         self.redNo = ""
         self.last_num = 0
@@ -120,7 +138,7 @@ class Iqiyi:
             self.print_now('推送失败')
 
     def tgpush(self, content):
-        url = f"https://api.telegram.org/bot{tgbot_token}/sendMessage"
+        url = f"https://tg.cffd.ml/bot{tgbot_token}/sendMessage"
         if tg_push_api != "":
             url = f"https://{tg_push_api}/bot{tgbot_token}/sendMessage"
         headers = {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -131,7 +149,7 @@ class Iqiyi:
             self.print_now('推送失败')
 
     def push(self, msg):
-        if pushplus_token != "":
+        if pushplus_token == "1":
             self.pushplus("爱奇艺每月领取会员", msg)
         if tgbot_token != "" and tg_userId != "":
             self.tgpush(f"爱奇艺每月领取会员\n{msg}")
@@ -145,11 +163,16 @@ class Iqiyi:
     def get_level(self):
         url = f'https://passport.iqiyi.com/apis/user/info.action?authcookie={self.ck}&fields=userinfo%2Cqiyi_vip&timeout=15000'
         data = self.req(url)
-        if data.get("code") == 'A00000':
+        self.usr = data['data']['userinfo']['user_name']
+        print('\n账号：', self.usr, '\n')
+        self.msg += '\n\n账号：' + self.usr + '\n\n'
+        if data.get("code") == 'A00000' and data['data']['qiyi_vip_info']:
+            #print(data['data'])
             self.level = data['data']['qiyi_vip_info']['level']
         else:
             self.print_now("获取用户等级信息失败 最大可能是cookie失效了 也可能是网络问题")
-            exit(0)
+            self.level = 0
+            #exit(0)
 
     def genRedNo(self):
         url = f"https://act.vip.iqiyi.com/level-right/red/gen?fv=b75a9b2a7d208020&P00001={self.ck}"
@@ -188,7 +211,7 @@ class Iqiyi:
             data = req.json()
             if data.get("data") == "success":
                 self.print_now("已将您的红包码提交到助力池")
-                self.msg += "已将您的红包码提交到助力池"
+                self.msg += "已将您的红包码提交到助力池\n"
             else:
                 self.print_now(data["data"])
         else:
@@ -220,10 +243,12 @@ class Iqiyi:
             return False
         else:
             self.print_now(f"领取失败 原因是{data['msg']}")
+            self.msg += f"领取失败 原因是{data['msg']}\n"
             if "上限" in data["msg"]:
                 return True
 
-    def main(self):
+    def main(self, msg):
+        
         self.get_level()
         if int(self.level) >= 5:
             self.genRedNo()
@@ -245,11 +270,16 @@ class Iqiyi:
             if status:
                 break
             sleep(2)
-        if self.msg == "":
-            self.msg = "本次运行啥都没有得到"
-        self.push(self.msg)
+
+        msg += self.msg
+        return msg
 
 
 if __name__ == '__main__':
-    iqiyi = Iqiyi(iqy_ck)
-    iqiyi.main()
+    msg = ''#f'共{len(iqy_ckArr)}个账号'
+    print(f'共{len(iqy_ckArr)}个账号')
+    for i in iqy_ckArr:
+        iqiyi = Iqiyi(i)
+        msg += iqiyi.main(msg)
+        
+    send('爱奇艺红包领取', msg)

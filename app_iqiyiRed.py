@@ -47,7 +47,8 @@ if "P00001" in iqy_cks:
     iqy_ckArr = []
     iqy_cksArr = iqy_cks.split('\n')
     for i in iqy_cksArr:
-
+        if len(i) < 10 :
+            continue
         iqy_ckArr.append(findall(r"P00001=(.*?)(;|$)", i)[0][0])
 
 def tgpush(content):
@@ -247,7 +248,7 @@ class Iqiyi:
             if "上限" in data["msg"]:
                 return True
 
-    def main(self, msg):
+    def main(self):
         
         self.get_level()
         if int(self.level) >= 5:
@@ -271,8 +272,7 @@ class Iqiyi:
                 break
             sleep(2)
 
-        msg += self.msg
-        return msg
+        return self.msg
 
 
 if __name__ == '__main__':
@@ -280,6 +280,7 @@ if __name__ == '__main__':
     print(f'共{len(iqy_ckArr)}个账号')
     for i in iqy_ckArr:
         iqiyi = Iqiyi(i)
-        msg += iqiyi.main(msg)
+        msg += iqiyi.main()
+
         
     send('爱奇艺红包领取', msg)

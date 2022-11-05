@@ -26,6 +26,11 @@ captcha_username = environ.get('captcha_username') if environ.get('captcha_usern
 captcha_pwd = environ.get('captcha_pwd') if environ.get('captcha_pwd') else ''
 CHANNEL_ID1 = environ.get('channel_id') if environ.get('channel_id') else ''
 #session_name = API_ID[:]
+if captcha_username and captcha_pwd:
+    captcha_usernameArr = captcha_username.split('&')
+    captcha_pwdArr = captcha_pwd.split('&')
+
+
 if CHANNEL_ID1:
     CHANNEL_ID = CHANNEL_ID1.split('&')
 else:
@@ -47,9 +52,11 @@ async def captcha_solver(dealcap):
         base64data = base64.b64encode(tp.read())
         #print_now(base64data)
     captcha_url = 'https://api.apitruecaptcha.org/one/gettext'
+    c = random.randint(0, len(captcha_usernameArr) - 1)
+    print_now('本次调用账号' + captcha_usernameArr[c])
     data = {
-        "userid":captcha_username,
-        "apikey":captcha_pwd,
+        "userid":captcha_usernameArr[c],
+        "apikey":captcha_pwdArr[c],
         'case':'lower',
         "data":str(base64data.decode('utf-8'))
     }

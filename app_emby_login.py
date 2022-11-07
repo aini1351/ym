@@ -87,7 +87,7 @@ class emby_login:
             req = post(url, data = data, headers = headers, timeout=30, verify=False)#不验证ssl证书
         except:
             print(url,data,headers)
-            print(req)
+            #print(req)
             print_now('url访问出错')
             msg.append('url访问出错了!!!')
             url_wrong = 1

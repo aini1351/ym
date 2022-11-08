@@ -219,8 +219,8 @@ if __name__  == '__main__':
         accountArr = accounts['account_info'].split('&')
         url_wrong = 0
         for i in accountArr:
-            print_now('**** 开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ****\n')
-            msg.append('**** 账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ****\n')
+            print_now('\n**** 开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ****\n')
+            msg.append('\n**** 账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ****\n')
             emby_login(i.split('@')[0], i.split('@')[1], url).main()
             if url_wrong:
                 print_now(f'url访问出错, 后续账号不再运行')

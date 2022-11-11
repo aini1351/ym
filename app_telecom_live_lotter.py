@@ -119,8 +119,13 @@ def main(phone, password):
         for liveInfo in data["data"]:
             #print(timestamp(True))
             #print(int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))))
-            if 1740 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) > 0:
-                mainmsg += TelecomLotter(phone, password).lotter(liveInfo["liveId"], liveInfo["period"])
+            mainmsgs = ''
+            
+            if 17400 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) > 0:
+                mainmsgs = TelecomLotter(phone, password).lotter(liveInfo["liveId"], liveInfo["period"])
+                if mainmsgs:
+                    mainmsg += mainmsgs
+
     if mainmsg:
         return mainmsg
 

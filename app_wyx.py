@@ -17,6 +17,8 @@ from hashlib import md5 as md5Encode
 from random import randint
 from os import environ, system
 from time import time
+from sendNotify import send
+from random import randint, uniform,shuffle
 
 try:
     from Crypto.Cipher import AES
@@ -29,16 +31,19 @@ except:
     print("安装完成 脚本退出 请重新执行")
     exit(0)
 
-token = environ.get("WXY_TOKEN") if environ.get("WXY_TOKEN") else ""
+WXY_TOKENs = environ.get("WXY_TOKEN") if environ.get("WXY_TOKEN") else ""
+
+if WXY_TOKENs.find('\n') != -1:
+    WXY_TOKENArr = WXY_TOKENs.split('\n')
+else:
+    WXY_TOKENArr = WXY_TOKENs
+
 pushplus_token = environ.get("PUSH_PLUS_TOKEN") if environ.get("PUSH_PLUS_TOKEN") else ""
 tgbot_token = environ.get("TG_BOT_TOKEN") if environ.get("TG_BOT_TOKEN") else ""
 tg_userId = environ.get("TG_USER_ID") if environ.get("TG_USER_ID") else ""
 tg_push_api = environ.get("TG_API_HOST") if environ.get("TG_API_HOST") else ""
-if token == "":
+if WXY_TOKENArr == "":
     print("未填写token 请添加环境变量 WXY_TOKEN")
-    exit(0)
-if len(token) != 32:
-    print("填写的token不对 是一个32位16进制数")
     exit(0)
 
 BLOCK_SIZE = AES.block_size
@@ -162,9 +167,12 @@ class WYX:
             encrypt_body = encrypt_data["body"]
             encrypt_sec = encrypt_data["sec"]
             decrypt_data = AESCipher(self.decrypt_key(encrypt_sec)).decrypt(encrypt_body)
+            #print(loads(decrypt_data))
             total_score = loads(decrypt_data)["tripcoins"]
             print(f"查询成功, 你共有{total_score}点积分")
-            self.msg += f", 你共有{total_score}点积分"
+            print(loads(decrypt_data)['rewardTip'])
+            self.msg += f", 你共有{total_score}点积分\n"
+            self.msg += loads(decrypt_data)['rewardTip']
 
     def get_checkin_taskid(self):
         url = f"https://app.jegotrip.com.cn/api/service/v1/mission/sign/querySign?token={self.token}&h_token={self.token}&lang=zh_CN"
@@ -201,6 +209,7 @@ class WYX:
             "body": AESCipher(key).encrypt(f'{{"signConfigId":{self.get_checkin_taskid()}}}')
         }
         data = post(url, headers=self.headers, json=body).json()
+        #print(data)
         if data["code"] == "0":
             self.msg += "签到成功"
             print(self.msg)
@@ -211,8 +220,26 @@ class WYX:
     def main(self):
         self.checkin()
         self.query_total_score()
-        self.push(self.msg)
-
+        #self.push(self.msg)
+        return self.msg + '\n\n'
 
 if __name__ == "__main__":
-    WYX(token).main()
+    for x in WXY_TOKENArr:
+        if len(x) < 32:
+            WXY_TOKENArr.remove(x)
+    print('共' + str(len(WXY_TOKENArr)) + '个账户')
+    c = 0
+
+    msg = ''
+    shuffle(WXY_TOKENArr)
+    print(WXY_TOKENArr)
+    for i in WXY_TOKENArr:
+        c = c + 1
+        print('\n账户' + str(c) + '：' + str(i.split('@')[1]) + '\n')
+        msg += '\n账户' + str(c) + '：' + str(i.split('@')[1]) + '\n'
+        msg += WYX(i.split('@')[0]).main()
+        
+    print('\n\n'+msg)
+    send("无忧行app签到", msg)
+    exit(0)
+

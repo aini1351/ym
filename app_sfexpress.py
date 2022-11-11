@@ -21,15 +21,20 @@ from requests import Session
 from json import dumps
 from tools.send_msg import push
 from tools.tool import timestamp, md5, print_now, get_environ
+from os import environ
+from sendNotify import send
+signs = environ.get("SF_SIGN") if environ.get("SF_SIGN") else ""
 
-sign = get_environ("SF_SIGN")
-if sign == "":
-    exit(0)
+if signs.find('\n') != -1:
+    signArr = signs.split('\n')
+else:
+    signArr = signs
 
 class SFExpress:
     def __init__(self, sign):
         self.session = Session()
         self.sign = sign
+        self.msg = ''
         self.sign = str(self.sign).replace("+", "%2B")
         self.sign = str(self.sign).replace("/", "%2F")
 
@@ -186,15 +191,38 @@ class SFExpress:
             "Connection": "keep-alive ",
         }
         data = self.session.post(url, headers=headers, json=body).json()
+        print(data)
         total_score = data["obj"]["availablePoints"]
         print(f"您当前账号共有积分{total_score}")
-        push("顺丰签到", f"您当前账号共有积分{total_score}")
+        #push("顺丰签到", f"您当前账号共有积分{total_score}")
+        self.msg += f"\n您当前账号共有积分{total_score}\n"
     def main(self):
         self.refersh_cookie()
         # self.wx_check_in()
         self.app_check_in()
         self.get_task()
         self.query_score()
+        return self.msg
+        
+
 if __name__ == "__main__":
-    sf = SFExpress(sign)
-    sf.main()
+    for x in signArr:
+        if len(x) < 10:
+            signArr.remove(x)
+    print('共' + str(len(signArr)) + '个账户')
+    c = 0
+    l = []
+    msg = ''
+    #shuffle(signArr)
+    print(signArr)
+    for i in signArr:
+        c = c + 1
+        print('\n账户' + str(c) + '：' + str(i) + '\n')
+        sf = SFExpress(i)
+        msg += sf.main()
+
+    if msg:
+        send("顺丰签到", msg)
+    exit(0)
+    
+

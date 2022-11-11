@@ -142,6 +142,7 @@ if __name__ == "__main__":
         p.start()
  '''
         if '@' in i and len(i.split('@')[1]) > 4:
+            m = ''
             m = main(i.split('@')[0], i.split('@')[1])
             if m:
                 msg += m
@@ -150,7 +151,7 @@ if __name__ == "__main__":
             #msg += ChinaTelecom(i,'').main()
 
     if msg:
-        send("电信app签到", msg)
+        send("电信app直播间抽奖", msg)
     exit(0)
     
 

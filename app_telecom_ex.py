@@ -5,7 +5,7 @@
 # @Time : 2022/9/12 16:10
 # -------------------------------
 # cron "1 12 * * *"
-# const $ = new Env('电信签到');
+# const $ = new Env('电信签到兑换话费');
 """
 1. 电信签到 不需要抓包 脚本仅供学习交流使用, 请在下载后24h内删除
 2. 环境变量说明:
@@ -192,7 +192,7 @@ class ChinaTelecom:
             print_now(data)
             if data["code"] == "0":
                 break
-            sleep(3)
+            sleep(5)
         rewardId = self.query_signinfo()
         if rewardId == "":
             self.msg += f"账号{self.phone}连续签到7天兑换1元话费成功\n"
@@ -214,15 +214,18 @@ class ChinaTelecom:
     def main(self):
         self.init()
         self.coin_info()
+        '''
         self.chech_in()
         self.get_task()
         self.do_task()
-        #print('aaaa'+str(foods))
-        if self.coin_count['totalCoin'] > 1500:
+        print('aaaa'+str(foods))
+        if self.coin_count['totalCoin'] > 2000:
             print('开始喂食。。。')
             for i in range(foods):
                 self.food()
+                '''
         self.convert_reward()
+        
         if datetime.now().day == 1:
             self.get_level()
         self.coin_info()

@@ -33,8 +33,8 @@ from sendNotify import send
 
 phone_nums = environ.get("TELECOM_PHONE") if environ.get("TELECOM_PHONE") else ""
 foods = int(float(get_environ("TELECOM_FOOD", 5, False)))
-if phone_nums.find('&') != -1:
-    phone_numArr = phone_nums.split('&')
+if phone_nums.find('\n') != -1:
+    phone_numArr = phone_nums.split('\n')
 else:
     phone_numArr = phone_nums
 
@@ -255,7 +255,11 @@ if __name__ == "__main__":
         l.append(p)
         p.start()
  '''
-        msg += ChinaTelecom(i).main()
+        if "@" in i:
+            msg += ChinaTelecom(i.split('@')[0]).main()
+        else:
+            msg += ChinaTelecom(i).main()
+        
     print(msg)
     send("电信app签到", msg)
     exit(0)

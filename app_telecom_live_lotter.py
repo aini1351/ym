@@ -23,6 +23,7 @@ from base64 import b64encode
 from os import environ
 from tools.tool import timestamp, get_environ
 from app_telecom_task import ChinaTelecom
+from sendNotify import send
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 phone_nums = environ.get("TELECOM_PHONE") if environ.get("TELECOM_PHONE") else ""
 foods = int(float(get_environ("TELECOM_FOOD", 10, False)))
@@ -33,6 +34,7 @@ else:
 
 class TelecomLotter:
     def __init__(self, phone, password):
+        self.msg = ''
         self.phone = phone
         chinaTelecom = ChinaTelecom(phone, password)
         chinaTelecom.init()
@@ -97,6 +99,11 @@ class TelecomLotter:
     
         data = post(url, headers=headers, json=body).json()
         print(data)
+        
+        if data['data']:
+            self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
+            self.msg += data['data']['title'] + '\n'
+        return self.msg
 
 def main(phone, password):
     url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=21"
@@ -106,10 +113,16 @@ def main(phone, password):
         "user-agent": f"CtClient;9.6.1;Android;12;SM-G9860;{b64encode(random_phone[5:11].encode()).decode().strip('=+')}!#!{b64encode(random_phone[0:5].encode()).decode().strip('=+')}"
     }
     data = get(url, headers=headers).json()
+    #print(data)
+    mainmsg = ''
     if data["code"] == 0:
         for liveInfo in data["data"]:
+            #print(timestamp(True))
+            #print(int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))))
             if 1740 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) > 0:
-                TelecomLotter(phone, password).lotter(liveInfo["liveId"], liveInfo["period"])
+                mainmsg += TelecomLotter(phone, password).lotter(liveInfo["liveId"], liveInfo["period"])
+    if mainmsg:
+        return mainmsg
 
 
 
@@ -129,12 +142,15 @@ if __name__ == "__main__":
         p.start()
  '''
         if '@' in i and len(i.split('@')[1]) > 4:
-            main(i.split('@')[0], i.split('@')[1])
+            m = main(i.split('@')[0], i.split('@')[1])
+            if m:
+                msg += m
         else:
             print_now('当前账户未填密码，无法抽奖，退出')
             #msg += ChinaTelecom(i,'').main()
 
-    #send("电信app签到", msg)
+    if msg:
+        send("电信app签到", msg)
     exit(0)
     
 

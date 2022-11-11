@@ -4,7 +4,7 @@
 # @Author : github@limoruirui https://github.com/limoruirui
 # @Time : 2022/9/12 16:10
 # -------------------------------
-# cron "1 12 * * *"
+# cron"1 12 * * *"
 # const $ = new Env('电信签到');
 """
 1. 电信签到 不需要抓包 脚本仅供学习交流使用, 请在下载后24h内删除
@@ -387,7 +387,7 @@ class ChinaTelecom:
                 except:
                     continue
         self.coin_info()
-        self.msg += f"\n\n账号{self.phone} 当前有金豆{self.coin_count['totalCoin']}\n\n"
+        self.msg += f"\n\n账号{self.phone} 当前有金豆{self.coin_count['totalCoin']}\n"
         #push("电信app签到", self.msg)
         return self.msg
 

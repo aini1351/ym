@@ -34,6 +34,7 @@ else:
 
 class TelecomLotter:
     def __init__(self, phone, password):
+        self.msg = ''
         self.phone = phone
         chinaTelecom = ChinaTelecom(phone, password)
         chinaTelecom.init()
@@ -158,6 +159,12 @@ class TelecomLotter:
             }
             data = post(url, headers=headers, json=body).json()
             print(data)
+            if data['data']:
+                self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
+                self.msg += data['data']['title'] + '\n'
+        if self.msg:
+            send("电信app直播间抽奖", msg)
+            return self.msg
 
 def main(phone, password):
     url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=21"

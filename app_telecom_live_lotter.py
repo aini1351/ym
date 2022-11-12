@@ -98,7 +98,7 @@ class TelecomLotter:
         }
     
         data = post(url, headers=headers, json=body).json()
-        print(data)
+        #print(data)
         
         if data['data']:
             self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
@@ -122,8 +122,11 @@ def main(phone, password):
             mainmsgs = ''
             
             if 17400 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) > 0:
+                print(f"直播间 {liveInfo['nickname']}")
+            
                 mainmsgs = TelecomLotter(phone, password).lotter(liveInfo["liveId"], liveInfo["period"])
                 if mainmsgs:
+                    mainmsg += "\n直播间 {liveInfo['nickname']}：\n"
                     mainmsg += mainmsgs
 
     if mainmsg:

@@ -34,7 +34,6 @@ else:
 
 class TelecomLotter:
     def __init__(self, phone, password):
-        self.msg = ''
         self.phone = phone
         chinaTelecom = ChinaTelecom(phone, password)
         chinaTelecom.init()
@@ -81,29 +80,84 @@ class TelecomLotter:
             return None
         except:
             return None
-    def lotter(self, liveId, period):
-        active_code = self.get_action_id(liveId)
-        if active_code is None:
-            print(f"此直播间无抽奖活动, 退出")
-            return
-        url = "https://xbk.189.cn/xbkapi/active/v2/lottery/do"
+    def get_action_id_other(self, liveId):
+        def encrypt_phone():
+            result = ""
+            for i in self.phone:
+                result += chr(ord(i) + 2)
+            return result
+        url = "https://wapmkt.189.cn:8301/query/directSeedingInfo"
         body = {
-            "active_code": active_code,
-            "liveId": liveId,
-            "period": period
+            "headerInfos": {
+                "code": "directSeedingInfo",
+                "timestamp": datetime.now().__format__("%Y%m%d%H%M%S"),
+                "broadAccount": "",
+                "broadToken": "",
+                "clientType": "#9.6.1#channel128#samsung SM-G9860#",
+                "shopId": "20002",
+                "source": "110003",
+                "sourcePassword": "Sid98s",
+                "token": self.token,
+                "userLoginName": self.phone
+            },
+            "content": {
+                "attach": "test",
+                "fieldData": {
+                    "liveId": liveId,
+                    "account": encrypt_phone()
+                }
+            }
         }
         headers = {
             "User-Agent": self.ua,
             "authorization": self.authorization
         }
-    
-        data = post(url, headers=headers, json=body).json()
-        #print(data)
-        
-        if data['data']:
-            self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
-            self.msg += data['data']['title'] + '\n'
-        return self.msg
+        data = post(url, headers=headers, json=body).json()["responseData"]["data"]
+        try:
+            if data["buoyLink"] is None:
+                return None
+            active_code = findall(r"active_code\u003d(.*?)\u0026", data["buoyLink"])[0]
+            return active_code
+        except:
+            return None
+    async def lotter(self, liveId, period):
+        """
+        :param liveId: 直播间id
+        :param period: 某个参数 暂不明意义 查询直播间信息时会返回
+        :return:
+        """
+        print_now(f"当前执行的直播间id为{liveId}")
+        for i in range(8):
+            # active_code1 查询直播间购物车中的大转盘活动id
+            active_code1 = self.get_action_id(liveId)
+            # active_code2 查询直播间非购物车 而是右上角的大转盘活动id
+            active_code2 = self.get_action_id_other(liveId)
+            if active_code1 is not None or active_code2 is not None:
+                break
+            print(f"此直播间暂无抽奖活动, 等待90秒后再次查询 剩余查询次数{7 - i}")
+            await sleep(90)
+            continue
+        if active_code1 is None and active_code2 is None:
+            print("查询结束 本直播间暂无抽奖活动")
+            return
+        elif active_code1 is None or active_code2 is None:
+            active_code = active_code1 if active_code2 is None else active_code2
+            active_code_list = [active_code]
+        else:
+            active_code_list = [active_code1, active_code2]
+        for active_code in active_code_list:
+            url = "https://xbk.189.cn/xbkapi/active/v2/lottery/do"
+            body = {
+                "active_code": active_code,
+                "liveId": liveId,
+                "period": period
+            }
+            headers = {
+                "User-Agent": self.ua,
+                "authorization": self.authorization
+            }
+            data = post(url, headers=headers, json=body).json()
+            print(data)
 
 def main(phone, password):
     url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=21"
@@ -113,24 +167,24 @@ def main(phone, password):
         "user-agent": f"CtClient;9.6.1;Android;12;SM-G9860;{b64encode(random_phone[5:11].encode()).decode().strip('=+')}!#!{b64encode(random_phone[0:5].encode()).decode().strip('=+')}"
     }
     data = get(url, headers=headers).json()
-    #print(data)
-    mainmsg = ''
     if data["code"] == 0:
+        liveListInfo = {}
         for liveInfo in data["data"]:
-            #print(timestamp(True))
-            #print(int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))))
-            mainmsgs = ''
-            
             if 17400 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) > 0:
-                print(f"直播间 {liveInfo['nickname']}")
-            
-                mainmsgs = TelecomLotter(phone, password).lotter(liveInfo["liveId"], liveInfo["period"])
-                if mainmsgs:
-                    mainmsg += "\n直播间 {liveInfo['nickname']}：\n"
-                    mainmsg += mainmsgs
-
-    if mainmsg:
-        return mainmsg
+                liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
+        if len(liveListInfo) == 0:
+            print("查询结束 没有近期开播的直播间")
+        elif len(liveListInfo) == 1:
+            for liveId, period in liveListInfo.items():
+                run(TelecomLotter(phone, password).lotter(liveId, period))
+        elif len(liveListInfo) >= 2:
+            telecomLotter = TelecomLotter(phone, password)
+            all_task = [telecomLotter.lotter(liveId, period) for liveId, period in liveListInfo.items()]
+            loop = get_event_loop()
+            loop.run_until_complete(wait(all_task))
+            loop.close()
+    else:
+        print(f"查询直播间信息失败 接口返回: ------\n{data}")
 
 
 
@@ -144,11 +198,7 @@ if __name__ == "__main__":
     for i in phone_numArr:
         c = c + 1
         print('\n账户' + str(c) + '：' + str(i) + '\n')
-        '''
-        p = threading.Thread(target=ChinaTelecom(i).main(msg), args=(i,))
-        l.append(p)
-        p.start()
- '''
+
         if '@' in i and len(i.split('@')[1]) > 4:
             m = ''
             m = main(i.split('@')[0], i.split('@')[1])

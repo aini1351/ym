@@ -192,7 +192,7 @@ class ChinaTelecom:
             print_now(data)
             if data["code"] == "0":
                 break
-            if '已完成兑换' in data['msg'] or '成功' in data['msg']:
+            if '已完成兑换' in data['msg'] or '成功' in data['msg'] or  '点以后开始兑换' in data['msg']:
                 break
             sleep(5)
         rewardId = self.query_signinfo()

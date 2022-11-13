@@ -24,6 +24,7 @@ from os import environ
 from tools.tool import timestamp, get_environ
 from app_telecom_task import ChinaTelecom
 from sendNotify import send
+from asyncio import get_event_loop, wait, sleep, run
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 phone_nums = environ.get("TELECOM_PHONE") if environ.get("TELECOM_PHONE") else ""
 foods = int(float(get_environ("TELECOM_FOOD", 10, False)))

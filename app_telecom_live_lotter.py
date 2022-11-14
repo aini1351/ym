@@ -128,7 +128,7 @@ class TelecomLotter:
         :param period: 某个参数 暂不明意义 查询直播间信息时会返回
         :return:
         """
-        print_now(f"当前执行的直播间id为{liveId}")
+        print(f"当前执行的直播间id为{liveId}")
         for i in range(8):
             # active_code1 查询直播间购物车中的大转盘活动id
             active_code1 = self.get_action_id(liveId)
@@ -163,6 +163,7 @@ class TelecomLotter:
             if data['data']:
                 self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
                 self.msg += data['data']['title'] + '\n'
+        print(self.msg)
         if self.msg:
             send("电信app直播间抽奖", msg)
             return self.msg
@@ -213,7 +214,7 @@ if __name__ == "__main__":
             if m:
                 msg += m
         else:
-            print_now('当前账户未填密码，无法抽奖，退出')
+            print('当前账户未填密码，无法抽奖，退出')
             #msg += ChinaTelecom(i,'').main()
 
     if msg:

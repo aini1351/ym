@@ -129,15 +129,15 @@ class TelecomLotter:
         :return:
         """
         print(f"当前执行的直播间id为{liveId}")
-        for i in range(8):
+        for i in range(3):
             # active_code1 查询直播间购物车中的大转盘活动id
             active_code1 = self.get_action_id(liveId)
             # active_code2 查询直播间非购物车 而是右上角的大转盘活动id
             active_code2 = self.get_action_id_other(liveId)
             if active_code1 is not None or active_code2 is not None:
                 break
-            print(f"此直播间暂无抽奖活动, 等待90秒后再次查询 剩余查询次数{7 - i}")
-            await sleep(90)
+            print(f"此直播间暂无抽奖活动, 等待10秒后再次查询 剩余查询次数{2 - i}")
+            await sleep(10)
             continue
         if active_code1 is None and active_code2 is None:
             print("查询结束 本直播间暂无抽奖活动")

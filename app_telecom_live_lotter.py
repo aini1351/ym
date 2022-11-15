@@ -165,7 +165,7 @@ class TelecomLotter:
                 self.msg += data['data']['title'] + '\n'
         print(self.msg)
         if self.msg:
-            send("电信app直播间抽奖", msg)
+            send("电信app直播间抽奖", self.msg)
             return self.msg
 
 def main(phone, password):

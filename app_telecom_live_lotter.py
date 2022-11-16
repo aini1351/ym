@@ -14,7 +14,7 @@
 3. 必须登录过 电信营业厅 app的账号才能正常运行
 """
 import requests
-from random import randint
+from random import randint, uniform,shuffle, choices
 from re import findall
 from time import mktime, strptime
 from requests import post, get
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     c = 0
     l = []
     msg = ''
-    #shuffle(phone_numArr)
+    shuffle(phone_numArr)
     print(phone_numArr)
     for i in phone_numArr:
         c = c + 1

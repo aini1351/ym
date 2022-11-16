@@ -183,7 +183,7 @@ def main(phone, password):
                 liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
         if len(liveListInfo) == 0:
             print("查询结束 没有近期开播的直播间")
-        elif len(liveListInfo) == 1:
+        elif len(liveListInfo) >= 1:
             for liveId, period in liveListInfo.items():
                 run(TelecomLotter(phone, password).lotter(liveId, period))
         elif len(liveListInfo) >= 2:

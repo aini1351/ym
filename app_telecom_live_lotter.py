@@ -16,7 +16,7 @@
 import requests
 from random import randint, uniform,shuffle, choices
 from re import findall
-from time import mktime, strptime
+from time import mktime, strptime, strftime, sleep as time_sleep
 from requests import post, get
 from datetime import datetime
 from base64 import b64encode
@@ -76,7 +76,7 @@ class TelecomLotter:
         try:
             for waresInfo in data["responseData"]["data"]["waresInfos"]:
                 print(waresInfo["title"])
-                if "转盘" in waresInfo["title"] :
+                if "转盘" in waresInfo["title"] or "抽奖" in waresInfo["title"]:
                     active_code = findall(r"active_code\u003d(.*?)\u0026", waresInfo["link"])[0]
                     return active_code
             return None
@@ -164,36 +164,38 @@ class TelecomLotter:
                 self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
                 self.msg += data['data']['title'] + '\n'
         print(self.msg)
+        await sleep(5)
         if self.msg:
             send("电信app直播间抽奖", self.msg)
             return self.msg
 
 def main(phone, password):
-    url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=21"
-    random_phone = f"1537266{randint(1000, 9999)}"
-    headers = {
-        "referer": "https://xbk.189.cn/xbk/newHome?version=9.4.0&yjz=no&l=card&longitude=%24longitude%24&latitude=%24latitude%24&utm_ch=hg_app&utm_sch=hg_sh_shdbcdl&utm_as=xbk_tj&loginType=1",
-        "user-agent": f"CtClient;9.6.1;Android;12;SM-G9860;{b64encode(random_phone[5:11].encode()).decode().strip('=+')}!#!{b64encode(random_phone[0:5].encode()).decode().strip('=+')}"
-    }
-    data = get(url, headers=headers).json()
-    if data["code"] == 0:
-        liveListInfo = {}
-        for liveInfo in data["data"]:
-            if 17400 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) > 0:
-                liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
-        if len(liveListInfo) == 0:
-            print("查询结束 没有近期开播的直播间")
-        elif len(liveListInfo) >= 1:
+    # url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=21"
+    # random_phone = f"1537266{randint(1000, 9999)}"
+    # headers = {
+    #     "referer": "https://xbk.189.cn/xbk/newHome?version=9.4.0&yjz=no&l=card&longitude=%24longitude%24&latitude=%24latitude%24&utm_ch=hg_app&utm_sch=hg_sh_shdbcdl&utm_as=xbk_tj&loginType=1",
+    #     "user-agent": f"CtClient;9.6.1;Android;12;SM-G9860;{b64encode(random_phone[5:11].encode()).decode().strip('=+')}!#!{b64encode(random_phone[0:5].encode()).decode().strip('=+')}"
+    # }
+    # data = get(url, headers=headers).json()
+    url = "https://api.ruirui.fun/telecom/getLiveInfo"
+    data = get(url).json()
+    # print(data)
+    liveListInfo = {}
+    for liveInfo in data.values():
+        if 17400 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) + (
+                8 - int(strftime("%z")[2])) * 3600 > 0:
+            liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
+    if len(liveListInfo) == 0:
+        print("查询结束 没有近期开播的直播间")
+    else:
+        if len(liveListInfo) >= 1:
             for liveId, period in liveListInfo.items():
                 run(TelecomLotter(phone, password).lotter(liveId, period))
-        elif len(liveListInfo) >= 2:
-            telecomLotter = TelecomLotter(phone, password)
-            all_task = [telecomLotter.lotter(liveId, period) for liveId, period in liveListInfo.items()]
-            loop = get_event_loop()
-            loop.run_until_complete(wait(all_task))
-            loop.close()
-    else:
-        print(f"查询直播间信息失败 接口返回: ------\n{data}")
+        '''
+        telecomLotter = TelecomLotter(phone, password)
+        all_task = [telecomLotter.lotter(liveId, period) for liveId, period in liveListInfo.items()]
+        run(wait(all_task))
+        '''
 
 
 

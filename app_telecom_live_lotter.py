@@ -182,7 +182,7 @@ def main(phone, password):
     # print(data)
     liveListInfo = {}
     for liveInfo in data.values():
-        if 17400 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) + (
+        if 1740 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) + (
                 8 - int(strftime("%z")[2])) * 3600 > 0:
             liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
     if len(liveListInfo) == 0:

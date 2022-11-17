@@ -129,7 +129,8 @@ class TelecomLotter:
         :return:
         """
         print(f"当前执行的直播间id为{liveId}")
-        for i in range(3):
+        
+        for i in range(1):
             # active_code1 查询直播间购物车中的大转盘活动id
             active_code1 = self.get_action_id(liveId)
             # active_code2 查询直播间非购物车 而是右上角的大转盘活动id
@@ -137,8 +138,9 @@ class TelecomLotter:
             if active_code1 is not None or active_code2 is not None:
                 break
             print(f"此直播间暂无抽奖活动, 等待10秒后再次查询 剩余查询次数{2 - i}")
-            await sleep(10)
+            #await sleep(1)
             continue
+            
         if active_code1 is None and active_code2 is None:
             print("查询结束 本直播间暂无抽奖活动")
             return
@@ -164,21 +166,22 @@ class TelecomLotter:
                 self.msg += f'\n账户 {self.phone} 抽奖结果：\n'
                 self.msg += data['data']['title'] + '\n'
         print(self.msg)
-        await sleep(5)
+        #await sleep(2)
         if self.msg:
             send("电信app直播间抽奖", self.msg)
-            return self.msg
+            
+            #return self.msg
 
 
 def main(phone, password):
     apiType = 1
     try:
         url = "https://api.ruirui.fun/telecom/getLiveInfo"
-        data = get(url, timeout=5).json()
+        data = get(url, timeout=3).json()
     except:
         try:
             url = "https://raw.githubusercontent.com/limoruirui/Hello-Wolrd/main/telecomLiveInfo.json"
-            data = get(url, timeout=5).json()
+            data = get(url, timeout=3).json()
         except:
             url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=01"
             random_phone = f"1537266{randint(1000, 9999)}"
@@ -188,7 +191,7 @@ def main(phone, password):
             }
             data = get(url, headers=headers).json()
             apiType = 2
-    print(data)
+    #print(data)
     liveListInfo = {}
     allLiveInfo = data.values() if apiType == 1 else data["data"]
     for liveInfo in allLiveInfo:

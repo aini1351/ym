@@ -26,6 +26,7 @@ let userCookie = process.env[ckName];
 let userList = []
 let userIdx = 0
 let userCount = 0
+let channel_idArr = ["5dbf81501b011b790a33c74e","621c3865b40eef1dd8a11ce4","5dbf8143b198500745576301","5dbf80771b011b790a33c74b","5de74f0b1b011b48a65b7646","5fd956a1ad61a44c9d1ab2b1","5dbf811bb1985007455762fe","5dbf80591b011b790a33c74a"]
 //---------------------- 自定义变量区域 -----------------------------------      // 4. 要杀变量自己加
 
 let app_id = 31
@@ -192,7 +193,7 @@ class UserInfo {
 					if (task.id == 341) { // 新闻资讯点赞
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						let num = this.frequency - this.finish_times;
-						for (let index = 0; index < num; index++) {
+						for (let index = 0; index < num + 1; index++) {
 							await this.like(this.task_name);
 						}
 					}
@@ -212,10 +213,12 @@ class UserInfo {
 		let path = '/api/article/channel_list'
 		let sign = this.get_sign(path);
 		let a = utils.randomInt(1, 5);
-
+        let sjs = utils.randomInt(0, channel_idArr.length-1);
+        var channel_id = channel_idArr[sjs]
+        console.log(channel_id)
 		let options = {
 			method: "Get",
-			url: `https://vapp.tmuyun.com${path}?channel_id=5dbf811bb1985007455762fe&isDiFangHao=false&is_new=true&list_count=${a * 10}&size=10&start=${this.ts}`,
+			url: `https://vapp.tmuyun.com${path}?channel_id=${channel_id}&isDiFangHao=false&is_new=true&list_count=${a * 10}&size=10&start=${this.ts}`,
 			headers: {
 				"X-SESSION-ID": this.xs,
 				"X-REQUEST-ID": this.xr,

@@ -496,7 +496,9 @@ class UserInfo {
 	if (userList.length > 0) {
 		await start();
 	}
-	await SendMsg(msg);
+	let thetime = new Date()
+        console.log('今天是周' + thetime.getDay() + '小时：' + thetime.getHours())
+	if (thetime.getDay() === 5 && thetime.getHours() > 15) await SendMsg(msg);
 })()
 	.catch((e) => console.log(e))
 	.finally(() => $.done());

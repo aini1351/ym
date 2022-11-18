@@ -26,7 +26,7 @@ let userCookie = process.env[ckName];
 let userList = []
 let userIdx = 0
 let userCount = 0
-let channel_idArr = ["5dbf81501b011b790a33c74e","621c3865b40eef1dd8a11ce4","5dbf8143b198500745576301","5dbf80771b011b790a33c74b","5de74f0b1b011b48a65b7646","5fd956a1ad61a44c9d1ab2b1","5dbf811bb1985007455762fe","5dbf80591b011b790a33c74a"]
+let channel_idArr = ["5dbf81501b011b790a33c74e","621c3865b40eef1dd8a11ce4","5dbf80771b011b790a33c74b","5de74f0b1b011b48a65b7646","5fd956a1ad61a44c9d1ab2b1","5dbf811bb1985007455762fe","5dbf80591b011b790a33c74a"]
 //---------------------- 自定义变量区域 -----------------------------------      // 4. 要杀变量自己加
 
 let app_id = 31

@@ -192,7 +192,7 @@ class UserInfo {
 					if (task.id == 341) { // 新闻资讯点赞
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						let num = this.frequency - this.finish_times;
-						for (let index = 0; index < num + 1; index++) {
+						for (let index = 0; index < num; index++) {
 							await this.like(this.task_name);
 						}
 					}

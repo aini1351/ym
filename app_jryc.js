@@ -1,10 +1,10 @@
 /*
-诗画浦江  app
+诗画浦江  app id 14
 
 cron 10 8,10 * * *  shpj.js
 
 ========= 青龙--配置文件--贴心复制区域  ========= 
-# 诗画浦江
+# 今日越城
 export shpj=' x-session-id & x-request-id ' 
 
 
@@ -14,8 +14,8 @@ tg频道: https://t.me/yml2213_tg
 
 
 const utils = require("yml2213-utils");
-const $ = new Env("诗画浦江");   // 1.名字改了
-const ckName = "shpj";           // 2. 英文名字改一下
+const $ = new Env("今日越城");   // 1.名字改了
+const ckName = "jryc";           // 2. 英文名字改一下
 //-------------------- 一般不动变量区域 -------------------------------------      // 3. 不用管 
 const notify = $.isNode() ? require("./sendNotify") : ""
 const Notify = 1		 //0为关闭通知,1为打开通知,默认为1
@@ -28,7 +28,7 @@ let userIdx = 0
 let userCount = 0
 //---------------------- 自定义变量区域 -----------------------------------      // 4. 要杀变量自己加
 
-let app_id = 14
+let app_id = 31
 let text = sign = ''
 //---------------------------------------------------------
 
@@ -80,7 +80,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 			},
 		};
@@ -113,7 +113,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 			},
 		};
@@ -147,7 +147,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 			},
 		};
@@ -155,7 +155,7 @@ class UserInfo {
 		// console.log(options);
 		let result = await httpRequest(name, options);
 
-		// console.log(result);
+		//console.log(result);
 		if (result.code == 0) {
 			let tasks = result.data.rst.user_task_list;
 			// console.log(tasks);
@@ -164,39 +164,39 @@ class UserInfo {
 				this.finish_times = task.finish_times;
 				this.frequency = task.frequency;
 				if (task.completed == 0) {
-					if (task.id == 133) {	// 每日签到
+					if (task.id == 337) {	// 每日签到
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						await this.signin(this.task_name);
 					}
-					if (task.id == 134) { // 新闻资讯阅读
+					if (task.id == 338) { // 新闻资讯阅读
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						let num = this.frequency - this.finish_times;
 						for (let index = 0; index < num; index++) {
 							await this.read(this.task_name);
 						}
 					}
-					if (task.id == 135) { // 分享资讯给好友
+					if (task.id == 339) { // 分享资讯给好友
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						let num = this.frequency - this.finish_times;
 						for (let index = 0; index < num; index++) {
 							await this.share(this.task_name);
 						}
 					}
-					if (task.id == 136) { // 新闻资讯评论
+					if (task.id == 340) { // 新闻资讯评论
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						let num = this.frequency - this.finish_times;
 						for (let index = 0; index < num; index++) {
 							await this.comment(this.task_name);
 						}
 					}
-					if (task.id == 137) { // 新闻资讯点赞
+					if (task.id == 341) { // 新闻资讯点赞
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						let num = this.frequency - this.finish_times;
-						for (let index = 0; index < num; index++) {
+						for (let index = 0; index < num + 1; index++) {
 							await this.like(this.task_name);
 						}
 					}
-					if (task.id == 138) { // 使用本地服务
+					if (task.id == 342) { // 使用本地服务
 						DoubleLog(`账号 ${this.nickname} : ${this.task_name}----${this.finish_times}/${this.frequency}`);
 						await this.local_srv(this.task_name);
 					}
@@ -215,14 +215,14 @@ class UserInfo {
 
 		let options = {
 			method: "Get",
-			url: `https://vapp.tmuyun.com${path}?channel_id=5cc2ccbe1b011b18ee37591d&isDiFangHao=false&is_new=true&list_count=${a * 10}&size=10&start=${this.ts}`,
+			url: `https://vapp.tmuyun.com${path}?channel_id=5dbf811bb1985007455762fe&isDiFangHao=false&is_new=true&list_count=${a * 10}&size=10&start=${this.ts}`,
 			headers: {
 				"X-SESSION-ID": this.xs,
 				"X-REQUEST-ID": this.xr,
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 			},
 		};
@@ -230,7 +230,7 @@ class UserInfo {
 		// console.log(options);
 		let result = await httpRequest(name, options);
 
-		// console.log(result);
+		//console.log(result);
 		if (result.code == 0) {
 			DoubleLog(`账号[${this.index}]   ${name}, ok`);
 			let p = utils.randomInt(0, 9);
@@ -253,7 +253,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 			},
 		};
@@ -281,7 +281,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 				"Content-Type": `application/x-www-form-urlencoded`,
 			},
@@ -314,7 +314,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 				"Content-Type": `application/x-www-form-urlencoded`,
 			},
@@ -347,7 +347,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 				"Content-Type": `application/x-www-form-urlencoded`,
 			},
@@ -368,7 +368,7 @@ class UserInfo {
 	async local_srv(name) { // 使用本地服务
 		await this.artic('获取文章');
 
-		let path = '/api/user_mumber/doTas'
+		let path = '/api/user_mumber/doTask'
 		let sign = this.get_sign(path);
 
 		let options = {
@@ -380,7 +380,7 @@ class UserInfo {
 				"X-TIMESTAMP": this.ts,
 				"X-SIGNATURE": sign,
 				"Cache-Control": `no-cache`,
-				"X-TENANT-ID": `14`,
+				"X-TENANT-ID": `31`,
 				'Host': 'vapp.tmuyun.com',
 				"Content-Type": `application/x-www-form-urlencoded`,
 			},

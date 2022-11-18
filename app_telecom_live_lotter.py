@@ -173,7 +173,50 @@ class TelecomLotter:
             #return self.msg
 
 
-def main(phone, password):
+def main(phone, password, live):
+    '''
+    apiType = 1
+    try:
+        url = "https://api.ruirui.fun/telecom/getLiveInfo"
+        data = get(url, timeout=3).json()
+    except:
+        try:
+            url = "https://raw.githubusercontent.com/limoruirui/Hello-Wolrd/main/telecomLiveInfo.json"
+            data = get(url, timeout=3).json()
+        except:
+            url = "https://xbk.189.cn/xbkapi/lteration/index/recommend/anchorRecommend?provinceCode=01"
+            random_phone = f"1537266{randint(1000, 9999)}"
+            headers = {
+                "referer": "https://xbk.189.cn/xbk/newHome?version=9.4.0&yjz=no&l=card&longitude=%24longitude%24&latitude=%24latitude%24&utm_ch=hg_app&utm_sch=hg_sh_shdbcdl&utm_as=xbk_tj&loginType=1",
+                "user-agent": f"CtClient;9.6.1;Android;12;SM-G9860;{b64encode(random_phone[5:11].encode()).decode().strip('=+')}!#!{b64encode(random_phone[0:5].encode()).decode().strip('=+')}"
+            }
+            data = get(url, headers=headers).json()
+            apiType = 2
+    #print(data)
+    liveListInfo = {}
+    allLiveInfo = data.values() if apiType == 1 else data["data"]
+    
+    allLiveInfo = live
+    for liveInfo in allLiveInfo:
+        if 1740 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) + (
+                8 - int(strftime("%z")[2])) * 3600 > 0:
+            liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
+    '''
+    liveListInfo = live
+    if len(liveListInfo) == 0:
+        print("查询结束 没有近期开播的直播间")
+    else:
+        if len(liveListInfo) >= 1:
+            for liveId, period in liveListInfo.items():
+                run(TelecomLotter(phone, password).lotter(liveId, period))
+                '''
+        telecomLotter = TelecomLotter(phone, password)
+        all_task = [telecomLotter.lotter(liveId, period) for liveId, period in liveListInfo.items()]
+        run(wait(all_task))
+        '''
+
+
+def getroom():
     apiType = 1
     try:
         url = "https://api.ruirui.fun/telecom/getLiveInfo"
@@ -199,8 +242,11 @@ def main(phone, password):
                 8 - int(strftime("%z")[2])) * 3600 > 0:
             liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
     if len(liveListInfo) == 0:
-        print("查询结束 没有近期开播的直播间")
+        print("查询结束 没有近期开播的直播间，退出")
+        return ''
     else:
+        print('查询到开播直播间\n\n')
+        return liveListInfo
         if len(liveListInfo) >= 1:
             for liveId, period in liveListInfo.items():
                 run(TelecomLotter(phone, password).lotter(liveId, period))
@@ -211,9 +257,6 @@ def main(phone, password):
         '''
 
 
-
-
-
 if __name__ == "__main__":
     print('共' + str(len(phone_numArr)) + '个账户')
     c = 0
@@ -221,13 +264,17 @@ if __name__ == "__main__":
     msg = ''
     shuffle(phone_numArr)
     print(phone_numArr)
+    print('首先去查询开播直播间。。。')
+    live = getroom()
+    if not live:
+        exit(0)
     for i in phone_numArr:
         c = c + 1
         print('\n账户' + str(c) + '：' + str(i) + '\n')
 
         if '@' in i and len(i.split('@')[1]) > 4:
             m = ''
-            m = main(i.split('@')[0], i.split('@')[1])
+            m = main(i.split('@')[0], i.split('@')[1], live)
             if m:
                 msg += m
         else:

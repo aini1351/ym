@@ -87,7 +87,8 @@ class SFExpress:
         print(self.session.post(url, headers=headers, json=body).text)
     def app_check_in(self):
         # url = "https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~integralTaskSignPlusService~getUnFetchPointAndDiscount"
-        url = "https://mcs-mimp-web.sf-express.com/mcs-mimp/integralTaskSignPlusService/automaticSignFetchPackage"
+        #url = "https://mcs-mimp-web.sf-express.com/mcs-mimp/integralTaskSignPlusService/automaticSignFetchPackage"
+        url = "https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~integralTaskSignPlusService~automaticSignFetchPackage"
         timestam = timestamp()
         body = {
             "comeFrom": "vioin",

@@ -28,7 +28,7 @@ let time = new Date()
         return;
     }
     console.log("共" + flbcookiesArr.length + "个账号")
-    await gethost()
+    //await gethost()
     if (!Host) {
         Host = 'www.wnflb99.com'
         console.log("未获取到host，使用固定host:" + Host)

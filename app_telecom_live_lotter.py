@@ -122,7 +122,7 @@ class TelecomLotter:
         :param period: 某个参数 暂不明意义 查询直播间信息时会返回
         :return:
         """
-        print_now(f"当前执行的直播间id为{liveId}")
+        print_now(f"{self.phone} 当前执行的直播间id为{liveId}")
         for i in range(2):
             # active_code1 查询直播间购物车中的大转盘活动id
             active_code1 = self.get_action_id(liveId)
@@ -131,7 +131,7 @@ class TelecomLotter:
             if active_code1 is not None or active_code2 is not None:
                 break
             print(f"此直播间暂无抽奖活动, 等待2秒后再次查询 剩余查询次数{2 - i}")
-            #await sleep(10)
+            await sleep(10)
             continue
         if active_code1 is None and active_code2 is None:
             print("查询结束 本直播间暂无抽奖活动")
@@ -228,14 +228,17 @@ def main(phone, password):
         run(wait(all_task))
         '''
     if len(liveListInfo) == 0:
-        print("查询结束 没有近期开播的直播间")
+        print(f"{phone} 查询结束 没有近期开播的直播间")
     else:
         if len(liveListInfo) >= 1:
             for liveId, period in liveListInfo.items():
+                
                 run(TelecomLotter(phone, password).lotter(liveId, period))
     now = datetime.now()
+    '''
     if now.hour == 12 + int(strftime("%z")[2]) and now.minute > 10:
         TelecomLotter(phone, password).find_price()
+        '''
 
 if __name__ == '__main__':
     
@@ -260,13 +263,19 @@ if __name__ == '__main__':
         f += 1
     print('数据加载完毕')
     
-    param = get_environ("TELECOM_PHONE")
-    if param == "" :
+    users = get_environ("TELECOM_PHONE")
+    u = []
+    if users == "" :
         print("未填写相应变量 退出")
         exit(0)  
-    for x in param.split('\n') :
+    for x in users.split('\n') :
         tmp = x.split('@')
-        if len(tmp) < 2 :
-            continue
-        print("===================手机号:"+ tmp[0]+"===================")
-        main(tmp[0], tmp[1])
+        u.append(
+            threading.Thread(target=main, args=(tmp[0], tmp[1]))
+        )
+        #main(tmp[0], tmp[1])
+    for thread in u:
+        thread.start()
+    for thread in u:
+        thread.join()
+        

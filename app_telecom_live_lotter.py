@@ -154,7 +154,7 @@ class TelecomLotter:
             }
             data = post(url, headers=headers, json=body).json()
             print(data)
-            time_sleep(10)
+            #time_sleep(10)
             if data["code"] == 0:
                 push("直播抽奖", f"{self.phone}: 获得了{data['data']['title']}")
     def find_price(self):

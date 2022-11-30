@@ -130,8 +130,8 @@ class TelecomLotter:
             active_code2 = self.get_action_id_other(liveId)
             if active_code1 is not None or active_code2 is not None:
                 break
-            print(f"此直播间暂无抽奖活动, 等待2秒后再次查询 剩余查询次数{7 - i}")
-            await sleep(10)
+            print(f"此直播间暂无抽奖活动, 等待2秒后再次查询 剩余查询次数{2 - i}")
+            #await sleep(10)
             continue
         if active_code1 is None and active_code2 is None:
             print("查询结束 本直播间暂无抽奖活动")
@@ -209,6 +209,7 @@ def main(phone, password):
     try:
         url = "https://gitcode.net/weixin_52142858/telecomliveinfo/-/raw/master/telecomLiveInfo.json"
         data = get(url, timeout=5).json()        
+        print(data)
     except:
         data = list_d
     # print(data)
@@ -218,17 +219,26 @@ def main(phone, password):
         if 1740 > timestamp(True) - int(mktime(strptime(liveInfo["start_time"], "%Y-%m-%d %H:%M:%S"))) + (
                 8 - int(strftime("%z")[2])) * 3600 > 0:
             liveListInfo[liveInfo["liveId"]] = liveInfo["period"]
+            '''
     if len(liveListInfo) == 0:
         print("查询结束 没有近期开播的直播间")
     else:
         telecomLotter = TelecomLotter(phone, password)
         all_task = [telecomLotter.lotter(liveId, period) for liveId, period in liveListInfo.items()]
         run(wait(all_task))
+        '''
+    if len(liveListInfo) == 0:
+        print("查询结束 没有近期开播的直播间")
+    else:
+        if len(liveListInfo) >= 1:
+            for liveId, period in liveListInfo.items():
+                run(TelecomLotter(phone, password).lotter(liveId, period))
     now = datetime.now()
     if now.hour == 12 + int(strftime("%z")[2]) and now.minute > 10:
         TelecomLotter(phone, password).find_price()
 
 if __name__ == '__main__':
+    
     urls = get_urls()
     print('加载今日数据ing...')
     threads = []

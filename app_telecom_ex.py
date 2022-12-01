@@ -178,8 +178,9 @@ class ChinaTelecom:
             return ""
         else:
             print('接口未返回正确数据')
+            print('尝试使用固定id兑换')
             print(data)
-            return ""
+            return "baadc927c6ed4d8a95e28fa3fc68cb9"
 
     # 若连续签到为7天 则兑换
     def convert_reward(self):
@@ -255,17 +256,11 @@ if __name__ == "__main__":
     print(phone_numArr)
     u = []
     for i in phone_numArr:
-        c = c + 1
+        #c = c + 1
         #print('\n账户' + str(c) + '：' + str(i) + '\n')
-
-        if "@" in i:
-            u.append(
-                threading.Thread(target=ChinaTelecom(i.split('@')[0]).main())
-            )
-        else:
-            u.append(
-                threading.Thread(target=ChinaTelecom(i).main())
-            )
+        u.append(
+            threading.Thread(target=ChinaTelecom(i.split('@')[0]).main)
+        )
     for thread in u:
         thread.start()
     for thread in u:

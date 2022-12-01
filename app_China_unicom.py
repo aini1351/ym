@@ -23,8 +23,8 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import algorithms
 from Crypto.Cipher import AES
 from binascii import b2a_hex, a2b_hex
-
-
+from datetime import datetime
+now = datetime.now()
 class PrpCrypt(object):
 
     def __init__(self, key):
@@ -402,18 +402,20 @@ if __name__ == "__main__":
     shuffle(phone_numArr)
     print(phone_numArr)
     u = []
-    for i in phone_numArr:
-        
-        c = c + 1
-        u.append(
-            threading.Thread(target=China_Unicom(i).main)
-        )
-        '''
-        print('\n账户' + str(c) + '：' + str(i) + '\n')
-        China_Unicom(i).main()
-        '''
-    for thread in u:
-        thread.start()
-    for thread in u:
-        thread.join()
+
+    if int(now.strftime('%H')) < 13:
+        for i in phone_numArr:
+            c = c + 1
+            print('\n账户' + str(c) + '：' + str(i) + '\n')
+            China_Unicom(i).main()
+    else:
+        for i in phone_numArr:
+            u.append(
+                threading.Thread(target=China_Unicom(i).main)
+            ) 
+        for thread in u:
+            thread.start()
+        for thread in u:
+            thread.join()
+            
     exit(0)

@@ -18,7 +18,7 @@
 """
 import base64
 from random import shuffle
-
+import threading
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import algorithms
 from Crypto.Cipher import AES
@@ -90,7 +90,7 @@ from hashlib import md5 as md5Encode
 from random import randint, uniform
 from os import environ
 from sys import stdout, exit
-
+from sendNotify import send
 """读取环境变量"""
 phone_nums = environ.get("PHONE_NUM") if environ.get("PHONE_NUM") else ""
 if phone_nums.find('&') != -1:
@@ -286,10 +286,10 @@ class China_Unicom:
         if data["code"] == "0000":
             can_use_red = data["data"]["usableNum"] / 100
             if can_use_red >= 5:
-                self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 可以去兑换了")
+                self.print_now(f"\n查询成功 账户{phone} 当前有话费红包{can_use_red} 可以去兑换了")
                 self.push(f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击必得10元话费大转盘")
             else:
-                self.print_now(f"\n查询成功 你当前有话费红包{can_use_red} 不足设定的最低额度")
+                self.print_now(f"\n查询成功 账户{phone} 当前有话费红包{can_use_red} 不足设定的最低额度")
                 #self.push(f"账户{phone} \n你当前有话费红包{can_use_red} 不足设定的最低额度")
 
     def exchangescore(self,gaintype): #领取月度任务奖励
@@ -307,7 +307,7 @@ class China_Unicom:
         #self.print_now(data) 
         if data['code'] == '0000':
             data = data['data']
-            self.print_now('当前转盘情况：') 
+            self.print_now(f'账户 {self.phone_num} 当前转盘情况：') 
             x = 0
             for i in data:
                 #self.print_now(i)
@@ -373,8 +373,6 @@ class China_Unicom:
                     print('未完成，进度：' + str(x['totalNum']) + '/' + str(x['mapList'][0]['bindvalue']) + '\n')                    
                 
 
-
-
     def main(self):
 
         self.referer_login()
@@ -403,8 +401,19 @@ if __name__ == "__main__":
     c = 0
     shuffle(phone_numArr)
     print(phone_numArr)
+    u = []
     for i in phone_numArr:
+        
         c = c + 1
+        u.append(
+            threading.Thread(target=China_Unicom(i).main)
+        )
+        '''
         print('\n账户' + str(c) + '：' + str(i) + '\n')
         China_Unicom(i).main()
+        '''
+    for thread in u:
+        thread.start()
+    for thread in u:
+        thread.join()
     exit(0)

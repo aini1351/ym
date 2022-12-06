@@ -361,7 +361,7 @@ class ChinaTelecom:
         self.chech_in()
         self.get_task()
         self.do_task()
-        if foods != 0 and self.coin_count['totalCoin'] > 2000:
+        if foods != 0 and self.coin_count['totalCoin'] > 5000:
             for i in range(foods):
                 self.food()
                 if '已达到最大喂食次数' in self.weishicishu:

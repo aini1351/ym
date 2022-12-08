@@ -371,6 +371,7 @@ class ChinaTelecom:
         if datetime.now().day == 1:
             self.get_level()
         self.share()
+        '''
         if self.ticket != "":
             self.author()
             for i in range(6):
@@ -387,6 +388,7 @@ class ChinaTelecom:
                         break
                 except:
                     continue
+                    '''
         self.coin_info()
         self.msg += f"\n\n账号{self.phone} 当前有金豆{self.coin_count['totalCoin']}\n"
         #push("电信app签到", self.msg)

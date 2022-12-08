@@ -25,11 +25,13 @@ from os import environ
 from sendNotify import send
 signs = environ.get("SF_SIGN") if environ.get("SF_SIGN") else ""
 
-if signs.find('\n') != -1:
-    signArr = signs.split('\n')
-else:
-    signArr = signs
 
+
+signArr = signs.split('\n')
+for phone in signArr:
+    if not phone:
+        signArr.remove(phone)
+        
 class SFExpress:
     def __init__(self, sign):
         self.session = Session()

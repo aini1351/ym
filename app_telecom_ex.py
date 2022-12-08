@@ -33,11 +33,12 @@ from sendNotify import send
 
 phone_nums = environ.get("TELECOM_PHONE") if environ.get("TELECOM_PHONE") else ""
 foods = int(float(get_environ("TELECOM_FOOD", 5, False)))
-if phone_nums.find('\n') != -1:
-    phone_numArr = phone_nums.split('\n')
-else:
-    phone_numArr = phone_nums
 
+
+phone_numArr = phone_nums.split('\n')
+for phone in phone_numArr:
+    if not phone:
+        phone_numArr.remove(phone)
 
 class ChinaTelecom:
     def __init__(self, phone):

@@ -93,11 +93,13 @@ from sys import stdout, exit
 from sendNotify import send
 """读取环境变量"""
 phone_nums = environ.get("PHONE_NUM") if environ.get("PHONE_NUM") else ""
-if phone_nums.find('&') != -1:
-    phone_numArr = phone_nums.split('&')
-else:
-    phone_numArr = phone_nums
 
+
+phone_numArr = phone_nums.split('\n')
+for phone in phone_numArr:
+    if not phone:
+        phone_numArr.remove(phone)  
+    
 unicom_lotter = environ.get("UNICOM_LOTTER") if environ.get("UNICOM_LOTTER") else True
 pushplus_token = environ.get("PUSH_PLUS_TOKEN") if environ.get("PUSH_PLUS_TOKEN") else ""
 tgbot_token = environ.get("TG_BOT_TOKEN") if environ.get("TG_BOT_TOKEN") else ""

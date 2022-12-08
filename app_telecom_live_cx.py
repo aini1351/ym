@@ -28,11 +28,13 @@ from asyncio import get_event_loop, wait, sleep, run
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 phone_nums = environ.get("TELECOM_PHONE") if environ.get("TELECOM_PHONE") else ""
 foods = int(float(get_environ("TELECOM_FOOD", 10, False)))
-if phone_nums.find('\n') != -1:
-    phone_numArr = phone_nums.split('\n')
-else:
-    phone_numArr = phone_nums
 
+phone_numArr = phone_nums.split('\n')
+for phone in phone_numArr:
+    if not phone:
+        phone_numArr.remove(phone)
+        
+        
 class TelecomLotter:
     def __init__(self, phone, password):
         self.msg = ''

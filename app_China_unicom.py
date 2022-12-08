@@ -95,7 +95,7 @@ from sendNotify import send
 phone_nums = environ.get("PHONE_NUM") if environ.get("PHONE_NUM") else ""
 
 
-phone_numArr = phone_nums.split('\n')
+phone_numArr = phone_nums.split('&')
 for phone in phone_numArr:
     if not phone:
         phone_numArr.remove(phone)  

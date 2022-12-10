@@ -30,7 +30,7 @@ let time = new Date()
     console.log("共" + flbcookiesArr.length + "个账号")
     //await gethost()
     if (!Host) {
-        Host = 'www.wnflb99.com'
+        Host = 'www.wnflb2023.com'
         console.log("未获取到host，使用固定host:" + Host)
         
     } else {
@@ -282,9 +282,9 @@ function sign(formhash) {
 
 function gethost() {
     const options = {
-        url: `https://fuliba-1251744788.file.myqcloud.com/`,
+        url: `http://fuliba2023-1256179406.file.myqcloud.com/`,
         headers: {
-            "Host": "fuliba-1251744788.file.myqcloud.com",
+            "Host": "fuliba2023-1256179406.file.myqcloud.com",
             "Accept": "*/*",
             "Connection": "keep-alive",
             //"Cookie": cookie,
@@ -304,7 +304,7 @@ function gethost() {
                 } else {
                     if (data) {
                        //console.log(data)    
-                       var rehost = /福利吧论坛地址\s+\<a href\=\"https\:\/\/(.+?)\"/
+                       var rehost = /福利吧最新地址\s+\<a href\=\"https\:\/\/(.+?)\"/
                        Host = data.match(rehost)[1]
                                                                                       
                     }

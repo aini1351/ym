@@ -234,10 +234,11 @@ class China_Unicom:
         url = "https://10010.woread.com.cn/ng_woread_service/rest/phone/vouchers/queryTicketAccount"
         date = datetime.today().__format__("%Y%m%d%H%M%S")
         crypt_text = f'{{"timestamp":"{date}","token":"{self.userinfo["token"]}","userId":"{self.userinfo["userid"]}","userIndex":{self.userinfo["userindex"]},"userAccount":"{self.userinfo["phone"]}","verifyCode":"{self.userinfo["verifycode"]}"}}'
-        body = {
+        '''body = {
             "sign": base64.b64encode(PrpCrypt(self.headers["accesstoken"][-16:]).encrypt(crypt_text)).decode()
         }
         self.headers["Content-Length"] = str(len(str(body)) - 1)
+        '''
         data = self.req(url, crypt_text)
         phone = self.phone_num
         if data["code"] == "0000":

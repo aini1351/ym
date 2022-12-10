@@ -122,7 +122,7 @@ class China_Unicom:
             self.print_now(data)
             if self.fail_num == 3:
                 self.print_now("当前任务出现异常 且错误次数达到3次 请手动检查")
-                send(f"{self.phone_num} 当前任务出现异常 且错误次数达到3次 请手动检查")
+                send('某通阅读', f"{self.phone_num} 当前任务出现异常 且错误次数达到3次 请手动检查")
                 exit(0)
             if data["code"] == "9999":
                 self.print_now("当前任务出现异常 正在重新执行")
@@ -245,10 +245,10 @@ class China_Unicom:
             can_use_red = data["data"]["usableNum"] / 100
             if can_use_red >= 5:
                 self.print_now(f"\n查询成功 账户{phone} 当前有话费红包{can_use_red} 可以去兑换了")
-                send(f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击必得10元话费大转盘")
+                send('某通阅读', f"账户{phone} \n当前有话费红包{can_use_red} 可以去兑换了 \n 入口：联通app搜索 阅读专区，点击必得10元话费大转盘")
             else:
                 self.print_now(f"\n查询成功 账户{phone} 当前有话费红包{can_use_red} 不足设定的最低额度")
-                #send(f"账户{phone} \n你当前有话费红包{can_use_red} 不足设定的最低额度")
+                #send('某通阅读', f"账户{phone} \n你当前有话费红包{can_use_red} 不足设定的最低额度")
 
     def exchangescore(self,gaintype): #领取月度任务奖励
         url = "https://10010.woread.com.cn/ng_woread_service/rest/activity/yearEnd/exchangeActiveScore"

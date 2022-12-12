@@ -10,6 +10,7 @@ import time
 import random
 import requests
 import os
+from random import randint, uniform, choice, shuffle
 from datetime import datetime
 from os import environ
 from sendNotify import send
@@ -249,9 +250,9 @@ async def main2(api_id, api_hash, channel_id):
             time.sleep(sj(5,8))
 
             #尝试八次，失败退出
-            if cishu > 10:
-                print_now('尝试次数已达到10次仍未成功，退出')
-                msg.append('尝试次数已达到10仍未签到成功')
+            if cishu > 30:
+                print_now('尝试次数已达到30次仍未成功，退出')
+                msg.append('尝试次数已达到30仍未签到成功')
                 if channel_id == '@EmbyPublicBot':
                     await client.send_message(channel_id, '/cancel')
                 await client.send_read_acknowledge(channel_id)
@@ -513,13 +514,14 @@ if __name__ == "__main__":
         yc = sj(3,10)
         #print_now('随机延迟' + str(yc) + '秒后开始执行')
         #time.sleep(yc)
+        shuffle(CHANNEL_ID)
         for j in CHANNEL_ID:
             if i == API_ID[0] and j == CHANNEL_ID[1]:
                 #continue
                 a = 1
             cishu = 0     #每个账号尝试签到次数
             is_signed = False
-            if j == '@Orange_Emby_Bot' or j == '@peach_emby_bot':  
+            if j == '@Orange_Emby_Bot' or j == '@peach_emby_bot' or j == '@EmbyCc_bot':  
                 asyncio.run(main2(i, API_HASH[API_ID.index(i)], j))
             elif j == '@EmbyMistyBot':
                 asyncio.run(main3(i, API_HASH[API_ID.index(i)], j))

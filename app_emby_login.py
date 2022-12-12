@@ -3,6 +3,7 @@ new Env('Emby 登录')
 '''
 import time
 import random
+from random import randint, uniform, choice, shuffle
 import requests
 from requests import post, get
 from sendNotify import send
@@ -212,12 +213,14 @@ if __name__  == '__main__':
     msg = []
     
     print_now('共' + str(len(accountsArr)) + '种emby')
+    shuffle(accountsArr)
     for accounts in accountsArr:
         print_now('\n\n************ 开始 Emby：' + accounts['type'] + ' ************\n\n')
         msg.append('\n\n************ Emby：' + accounts['type'] + ' ************\n\n')
         url = accounts['url']
         accountArr = accounts['account_info'].split('&')
         url_wrong = 0
+        shuffle(accountArr)
         for i in accountArr:
             print_now('\n**** 开始账号' + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ****\n')
             msg.append('\n**** 账号'  + str(accountArr.index(i) + 1) + '：' + i.split('@')[0] + ' ****\n')
@@ -227,7 +230,7 @@ if __name__  == '__main__':
                 msg.append('url访问出错, 后续账号不再运行')
                 break
             sj = sjs(100,1000)
-            print_now('随机等待' + str(sj) + '秒')
+            #print_now('随机等待' + str(sj) + '秒')
             #time.sleep(sj)
         msg.append('\n当前访问url：' + url)
     

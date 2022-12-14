@@ -498,7 +498,7 @@ class UserInfo {
     if (userList.length > 0) {
         await start()
     }
-    await SendMsg(msg)
+    //await SendMsg(msg)
 })()
     .catch((e) => console.log(e))
     .finally(() => $.done())

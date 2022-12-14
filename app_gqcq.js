@@ -31,7 +31,7 @@ export gqcq='token @ token'
 
 const utils = require("yml2213-utils")
 const $ = new Env("广汽传祺")
-const ckName = "gqcq"
+const ckName = "gqcqCookie"
 //check_utils("utils.js");
 //-------------------- 一般不动变量区域 -------------------------------------
 const notify = $.isNode() ? require("./sendNotify") : ""

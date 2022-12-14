@@ -205,7 +205,7 @@ class emby_login:
             time.sleep(sjs(5,20))
             self.view()
             if self.run:
-                time.sleep(sjs(15,50))
+                time.sleep(sjs(45,500))
                 self.lastest()
 
             
@@ -229,7 +229,7 @@ if __name__  == '__main__':
                 print_now(f'url访问出错, 后续账号不再运行')
                 msg.append('url访问出错, 后续账号不再运行')
                 break
-            sj = sjs(100,1000)
+            #sj = sjs(100,1000)
             #print_now('随机等待' + str(sj) + '秒')
             #time.sleep(sj)
         msg.append('\n当前访问url：' + url)

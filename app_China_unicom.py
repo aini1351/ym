@@ -53,6 +53,8 @@ tg_push_api = environ.get("TG_API_HOST") if environ.get("TG_API_HOST") else ""
 class China_Unicom:
     def __init__(self, phone_num):
         self.phone_num = phone_num
+        default_ua = f"Mozilla/5.0 (Linux; Android {randint(8, 13)}; SM-S908U Build/TP1A.220810.014; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/{randint(95, 108)}.0.5359.128 Mobile Safari/537.36; unicom{{version:android@9.0{randint(0,6)}00,desmobile:{self.phone_num}}};devicetype{{deviceBrand:,deviceModel:}};{{yw_code:}}"
+        run_ua = get_environ(key="UNICOM_USERAGENT", default=default_ua, output=False)
         self.headers = {
             "Host": "10010.woread.com.cn",
             "Accept": "application/json, text/plain, */*",
@@ -60,7 +62,7 @@ class China_Unicom:
             "Accept-Encoding": "gzip, deflate, br",
             "Content-Type": "application/json;charset=utf-8",
             "Origin": "https://10010.woread.com.cn",
-            "User-Agent": f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{randint(89, 103)}.0.{randint(100, 999)}.{randint(100, 999)} Safari/537.36",
+            "User-Agent": run_ua,
             "Connection": "keep-alive",
             "Referer": "https://10010.woread.com.cn/ng_woread/",
         }
@@ -80,7 +82,7 @@ class China_Unicom:
 
     def req(self, url, crypt_text):
         body = {
-            "sign": b64encode(Crypt(crypt_type="AES", key=self.headers["accesstoken"][-16:], iv="16-Bytes--String", mode="CBC").encrypt(crypt_text).encode()).decode()
+            "sign": b64encode(Crypt(crypt_type="AES", key="update!@#1234567", iv="16-Bytes--String", mode="CBC").encrypt(crypt_text).encode()).decode()
         }
         self.headers["Content-Length"] = str(len(dumps(body).replace(" ", "")))
         data = post(url, headers=self.headers, json=body).json()
@@ -361,7 +363,7 @@ if __name__ == "__main__":
     print(phone_numArr)
     u = []
 
-    if int(now.strftime('%H')) < 13:
+    if int(now.strftime('%H')) < 15:
         for i in phone_numArr:
             c = c + 1
             print('\n账户' + str(c) + '：' + str(i) + '\n')

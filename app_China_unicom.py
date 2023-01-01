@@ -53,7 +53,7 @@ tg_push_api = environ.get("TG_API_HOST") if environ.get("TG_API_HOST") else ""
 class China_Unicom:
     def __init__(self, phone_num):
         self.phone_num = phone_num
-        default_ua = f"Mozilla/5.0 (Linux; Android {randint(8, 13)}; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/{randint(95, 108)}.0.5359.128 Mobile Safari/537.36; unicom{{version:android@9.0{randint(0,6)}00,desmobile:{self.phone_num}}};devicetype{{Xiaomi,deviceModel:M2012K11AC}};{{yw_code:}}"
+        default_ua = f"Mozilla/5.0 (Linux; Android {randint(8, 13)}; M2012K11AC Build/SKQ1.211006.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/{randint(95, 108)}.0.5359.128 Mobile Safari/537.36; unicom{{version:android@9.0{randint(0,6)}00,desmobile:{self.phone_num}}};devicetype{{deviceBrand:Xiaomi,deviceModel:M2012K11AC}};{{yw_code:}}"
         run_ua = get_environ(key="UNICOM_USERAGENT", default=default_ua, output=False)
         self.headers = {
             "Host": "10010.woread.com.cn",

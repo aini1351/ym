@@ -305,7 +305,10 @@ async def main2(api_id, api_hash, channel_id):
                 buttons = event.message.reply_markup.rows[0].buttons
                 #print_now( event.message.reply_markup.rows[0])
                 if '选择您要使用的功能' in event.message.text:  #orange
-                    await event.message.click(2)  #签到按钮所在位置
+                    if channel_id == '@EmbyCc_bot':
+                        await event.message.click(3)
+                    else:
+                        await event.message.click(2)  #签到按钮所在位置
                     time.sleep(3) 
                     
                     async for msgs in client.iter_messages(channel_id, 1):  #获取最新一条消息

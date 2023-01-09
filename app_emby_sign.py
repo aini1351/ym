@@ -305,7 +305,7 @@ async def main2(api_id, api_hash, channel_id):
                 buttons = event.message.reply_markup.rows[0].buttons
                 #print_now( event.message.reply_markup.rows[0])
                 if '选择您要使用的功能' in event.message.text:  #orange
-                    if channel_id == '@EmbyCc_bot':
+                    if channel_id == '@EmbyCc_bot' or channel_id == "@Orange_Emby_Bot":
                         await event.message.click(3)
                     else:
                         await event.message.click(2)  #签到按钮所在位置
